@@ -1,6 +1,7 @@
 using System;
 using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class Enemy : MonoBehaviour
 {
@@ -18,6 +19,13 @@ public class Enemy : MonoBehaviour
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
 
+    public float Attack
+    {
+        set => attack = value;
+        get => attack;
+    }
+       
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -32,8 +40,6 @@ public class Enemy : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        BeAttack();
-
         if (other.CompareTag("Bullet"))
         {
             health -= other.GetComponent<Bullet>().Attack;
@@ -49,7 +55,7 @@ public class Enemy : MonoBehaviour
     {
     }
 
-    private void Dead()
+    public void Dead()
     {
         EnemyManager.Instance.enemyPool.Enqueue(this.gameObject);
         gameObject.transform.position = Vector3.zero;
@@ -57,8 +63,7 @@ public class Enemy : MonoBehaviour
         spriteRenderer.sprite = null;
         this.gameObject.SetActive(false);
     }
-
-    private void BeAttack() { }
+    
 
     public void GetEnemyData(EnemyData enemyData)
     {

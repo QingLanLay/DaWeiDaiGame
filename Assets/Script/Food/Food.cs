@@ -115,7 +115,6 @@ public class Food : MonoBehaviour
             return;
         }
 
-        Debug.Log("进入方法执行");
         // 获取玩家对象
         var playerController = other.GetComponentInParent<PlayerController>();
         ApplyEffect(playerController);
@@ -129,7 +128,6 @@ public class Food : MonoBehaviour
             return;
         }
 
-        Debug.Log("离开方法执行");
         // 再次检查状态，然后执行操作
         if (this.gameObject != null && this.gameObject.activeInHierarchy)
         {

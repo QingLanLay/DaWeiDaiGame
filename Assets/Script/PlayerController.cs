@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -29,6 +30,10 @@ public class PlayerController : MonoBehaviour
 
     // 子弹计时器
     private float timeBullet;
+
+    public DavidDie davidDie;
+
+    public int level = 1;
 
 #region 属性
 
@@ -62,11 +67,13 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         maxSpeed = 8f;
+        level = 1;
     }
 
     // Update is called once per frame
     void Update()
     {
+        davidDie.level = level;
         // 获取输入值
         moveHorizontal = Input.GetAxisRaw("Horizontal");
         moveVertical = Input.GetAxisRaw("Vertical");
@@ -78,7 +85,13 @@ public class PlayerController : MonoBehaviour
             PerformAttack();
             timeBullet = 0;
         }
+
+        if (health == 0)
+        {
+            Dead();
+        }
     }
+
 
     void FixedUpdate()
     {
@@ -90,7 +103,7 @@ public class PlayerController : MonoBehaviour
     private void Move()
     {
         rb.velocity = new Vector2(moveHorizontal * currentSpeed, rb.velocity.y);
-        
+
         // 速度限制
         if (rb.velocity.x > maxSpeed)
         {
@@ -106,4 +119,28 @@ public class PlayerController : MonoBehaviour
     {
         BulletManager.Instance.GetBullet();
     }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Enemy"))
+        {
+            Enemy enemy = other.GetComponent<Enemy>();
+            float enemyAttack = enemy.Attack;
+            health -= enemyAttack;
+            Debug.Log("受到了伤害:" + enemyAttack);
+            enemy.Dead();
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("Food"))
+        {
+            var food = other.GetComponent<Food>();
+            var foodName = food.CurrentFoodData.FoodName;
+            davidDie.Eat(foodName);
+        }
+    }
+
+    private void Dead() { }
 }

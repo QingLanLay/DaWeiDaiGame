@@ -6,7 +6,7 @@ using UnityEngine.Windows;
 using Random = UnityEngine.Random;
 
 
-public class FallingObjManager : MonoBehaviour
+public class FallingObjManager : SingletonMono<FallingObjManager>
 {
     // 对象池
     private Queue<GameObject> objectPool;
@@ -21,7 +21,7 @@ public class FallingObjManager : MonoBehaviour
     [SerializeField]
     private List<FoodData> foodList;
     
-    private Dictionary<FoodName,FoodData> foodDictionary;
+    public Dictionary<FoodName,FoodData> foodDictionary;
     
     private void Awake()
     {
@@ -30,7 +30,6 @@ public class FallingObjManager : MonoBehaviour
         // 列表转字典
         foreach (var data in foodList)
         {
-            Debug.Log(data.FoodName);
             foodDictionary.Add(data.FoodName, data);
         }
         
@@ -105,7 +104,6 @@ public class FallingObjManager : MonoBehaviour
         if (objectPool == null || objectPool.Count == 0)
         {
             GameObject newFood = GameObject.Instantiate(food, this.transform);
-            Debug.Log("创建了新的food");
             
             // 随机位置生成
             newFood.transform.position = new Vector3(randomXYZ+this.transform.position.x,
@@ -121,7 +119,6 @@ public class FallingObjManager : MonoBehaviour
             return newFood;
         }
 
-        Debug.Log("当前对象池内对象数："+objectPool.Count);
         // 获取对象池对象
         GameObject aFood = objectPool.Dequeue();
         aFood.GetComponent<Food>().CurrentFoodData = foodData;
