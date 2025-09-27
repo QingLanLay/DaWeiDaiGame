@@ -33,6 +33,7 @@ public class PlayerController : MonoBehaviour
 
     public DavidDie davidDie;
 
+    [Range(0,5)]
     public int level = 1;
 
 #region 属性
@@ -130,15 +131,22 @@ public class PlayerController : MonoBehaviour
             Debug.Log("受到了伤害:" + enemyAttack);
             enemy.Dead();
         }
+        
+
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
         if (other.CompareTag("Food"))
         {
-            var food = other.GetComponent<Food>();
-            var foodName = food.CurrentFoodData.FoodName;
-            davidDie.Eat(foodName);
+            // 如果可以吃，则执行吃方法
+            if (davidDie.CheckCanEat())
+            {
+                var food = other.GetComponent<Food>();
+                var foodName = food.CurrentFoodData.FoodName;
+                davidDie.Eat(foodName);
+                food.returnToPool?.Invoke(other.gameObject);
+            }
         }
     }
 

@@ -26,7 +26,7 @@ public class Food : MonoBehaviour
 
 
     // 返回对象池委托
-    private Action<GameObject> returnToPool;
+    public Action<GameObject> returnToPool;
 
 
     private void Awake()
@@ -127,12 +127,7 @@ public class Food : MonoBehaviour
         {
             return;
         }
-
-        // 再次检查状态，然后执行操作
-        if (this.gameObject != null && this.gameObject.activeInHierarchy)
-        {
-            returnToPool?.Invoke(gameObject);
-        }
+        
     }
 
     private void ApplyRandomForce()

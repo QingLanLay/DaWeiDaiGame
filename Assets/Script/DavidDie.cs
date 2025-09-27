@@ -16,12 +16,20 @@ public class DavidDie : MonoBehaviour
     private GameObject prefab;
     private PlayerController player;
 
+    // 滑动条
+    public Slider timeSlider;
+
+    // 消化时间
+    private float time = 0;
+
     private void Awake()
     {
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
         inDavidDie = new List<FoodName>();
         CheckIcon();
         Init();
+
+        timeSlider.interactable = false;
     }
 
     private void Init()
@@ -35,15 +43,36 @@ public class DavidDie : MonoBehaviour
 
     private void Update()
     {
-        CheckCanEat();
+        // 检测是否还能继续吃
+        if (CheckCanEat())
+        {
+            // 可以，则不进入消化倒计时
+        }
+        else
+        {
+            // 不可以，进入消化倒计时
+            time += Time.deltaTime;
+            if (time >= 5 / level)
+            {
+                time = 0;
+                Digestion();
+            }
+
+            if (time == 0)
+            {
+                timeSlider.value = 1;
+            }
+            else
+            {
+                timeSlider.value = 1 - time/(5/level);
+            }
+        }
+
         CheckIcon();
-        Digestion();
     }
 
     private void CheckIcon()
     {
-
-        
         // 多余图标清零
         for (int i = 0; i < IconList.Count; i++)
         {
@@ -70,19 +99,18 @@ public class DavidDie : MonoBehaviour
         {
             // 当前需要更新的图片
             inDavidDie.Add(foodName);
-            int displayIndex = inDavidDie.Count-1;
+            int displayIndex = inDavidDie.Count - 1;
             // 更新图标
-            if (displayIndex <= IconList.Count)
+            if (displayIndex < IconList.Count)
             {
                 // 查找对应图标
                 FoodData fd = FallingObjManager.Instance.foodDictionary[foodName];
-                if (fd !=null )
+                if (fd != null)
                 {
                     IconList[displayIndex].sprite = fd.Icon;
-                    IconList[displayIndex].color  = Color.white;
+                    IconList[displayIndex].color = Color.white;
                 }
             }
-            
         }
     }
 
@@ -114,7 +142,8 @@ public class DavidDie : MonoBehaviour
                             ((int)FallingObjManager.Instance.foodDictionary[foodList.food].Type + 1);
                 addAttack = FallingObjManager.Instance.foodDictionary[foodList.food].AddAttack * foodList.count *
                             ((int)FallingObjManager.Instance.foodDictionary[foodList.food].Type + 1);
-                addAttackSpeed = FallingObjManager.Instance.foodDictionary[foodList.food].AddAttackSpeed * foodList.count *
+                addAttackSpeed = FallingObjManager.Instance.foodDictionary[foodList.food].AddAttackSpeed *
+                                 foodList.count *
                                  ((int)FallingObjManager.Instance.foodDictionary[foodList.food].Type + 1);
                 addSpeed = FallingObjManager.Instance.foodDictionary[foodList.food].AddSpeed * foodList.count *
                            ((int)FallingObjManager.Instance.foodDictionary[foodList.food].Type + 1);
@@ -122,9 +151,14 @@ public class DavidDie : MonoBehaviour
 
             Add(addHealth, addAttack, addAttackSpeed, addSpeed);
             inDavidDie.Clear();
+            if (player.level < 5)
+            {
+                player.level += 1;
+            }
         }
     }
 
+    // 增加基础属性
     private void Add(float health, float attack, float attackSpeed, float speed)
     {
         player.Health += health;
@@ -133,9 +167,10 @@ public class DavidDie : MonoBehaviour
         player.MaxSpeed += speed;
     }
 
+    // 检测是否还能继续吃
     public bool CheckCanEat()
     {
-        if (inDavidDie.Count <= 4 + 2 * level)
+        if (inDavidDie.Count < 4 + 2 * level)
         {
             return canEat = true;
         }

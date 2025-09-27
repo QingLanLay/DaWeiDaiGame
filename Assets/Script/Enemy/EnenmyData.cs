@@ -9,7 +9,7 @@ using UnityEngine;
         private int id;
 
         [SerializeField]
-        private string name;
+        private string enemyName;
 
         [SerializeField]
         private float speed;
@@ -30,10 +30,10 @@ using UnityEngine;
             set => id = value;
         }
 
-        public string Name
+        public string EnemyName
         {
-            get => name;
-            set => name = value;
+            get => enemyName;
+            set => enemyName = value;
         }
 
         public float Speed

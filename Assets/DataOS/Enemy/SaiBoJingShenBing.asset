@@ -15,6 +15,6 @@ MonoBehaviour:
   id: 0
   name: "\u8D5B\u535A\u7CBE\u795E\u75C5"
   speed: 3
-  attack: 1
+  attack: 10
   health: 5
   icon: {fileID: 21300000, guid: c1424c3c3a5c98d4eb12a8a779d58343, type: 3}

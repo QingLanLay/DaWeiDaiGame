@@ -17,12 +17,14 @@ public class EnemyManager : SingletonMono<EnemyManager>
     private Dictionary<int, EnemyData> enemyDic;
 
     public Queue<GameObject> enemyPool;
-    
+
     // 计时器
     private float timeCount;
 
-    private void Awake()
+     protected override void Awake()
     {
+        base.Awake();
+        
         enemyDic = new Dictionary<int, EnemyData>();
 
         foreach (var enemy in enemyList)
