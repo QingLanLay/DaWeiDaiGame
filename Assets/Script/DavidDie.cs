@@ -15,15 +15,19 @@ public class DavidDie : MonoBehaviour
     public List<Image> IconList;
     private GameObject prefab;
     private PlayerController player;
-
+    public int currentExp;
     // 滑动条
     public Slider timeSlider;
 
     // 消化时间
     private float time = 0;
+    
+    // 控制游戏开始
+    public bool gameStarted = false;
 
     private void Awake()
     {
+        level = 1;
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
         inDavidDie = new List<FoodName>();
         CheckIcon();
@@ -151,10 +155,6 @@ public class DavidDie : MonoBehaviour
 
             Add(addHealth, addAttack, addAttackSpeed, addSpeed);
             inDavidDie.Clear();
-            if (player.level < 5)
-            {
-                player.level += 1;
-            }
         }
     }
 
@@ -177,6 +177,18 @@ public class DavidDie : MonoBehaviour
         else
         {
             return canEat = false;
+        }
+    }
+
+    public void UpLevel(int exp)
+    {
+        currentExp += exp;
+        if (currentExp >= level*level*level*100)
+        {
+            if (level < 5)
+            {
+                level++;
+            }
         }
     }
 }

@@ -20,6 +20,17 @@ using UnityEngine;
         [SerializeField]
         private float health;
 
+        [SerializeField]
+        private int exp;
+
+        public int Exp
+        {
+            get => exp;
+            set => exp = value;
+        }
+        
+        
+        
         [Header("图标")]
         [SerializeField]
         private Sprite icon;

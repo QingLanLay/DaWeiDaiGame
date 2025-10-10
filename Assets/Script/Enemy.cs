@@ -14,10 +14,14 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private float speed;
 
+    [SerializeField]
+    private int exp;
+
     private Sprite icon;
 
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
+    private Animator animator;
 
     public float Attack
     {
@@ -31,6 +35,7 @@ public class Enemy : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         spriteRenderer.sprite = icon;
+        animator = GetComponent<Animator>();
     }
 
     private void FixedUpdate()
@@ -43,10 +48,16 @@ public class Enemy : MonoBehaviour
         if (other.CompareTag("Bullet"))
         {
             health -= other.GetComponent<Bullet>().Attack;
+            var bullet = other.GetComponent<Bullet>();
+            bullet.ReturnToPool();
+            animator.SetTrigger("BeAttack");
+            
         }
 
         if (health <= 0)
         {
+            var davidDie = GameObject.FindWithTag("UI").GetComponent<DavidDie>();
+            davidDie.UpLevel(exp);
             Dead();
         }
     }
@@ -72,6 +83,7 @@ public class Enemy : MonoBehaviour
         attack = enemyData.Attack;
         icon = enemyData.Icon;
         spriteRenderer.sprite = icon;
+        exp = enemyData.Exp;
         spriteRenderer.size = new Vector2(1, 1);
 
     }

@@ -45,7 +45,7 @@ public class Bullet : MonoBehaviour
 
     private void OnDisable() { }
 
-    private void ReturnToPool()
+    public void ReturnToPool()
     {
         this.transform.position = Vector3.zero;
         gameObject.SetActive(false);
