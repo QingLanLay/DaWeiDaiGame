@@ -136,7 +136,7 @@ GameObject:
   - component: {fileID: 221356897}
   m_Layer: 5
   m_Name: DavidDiePanel
-  m_TagString: Untagged
+  m_TagString: UI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -159,7 +159,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 540, y: 164.31616}
+  m_AnchoredPosition: {x: 539.89, y: 163.66}
   m_SizeDelta: {x: 1080, y: 328.63232}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &221356897
@@ -190,7 +190,9 @@ MonoBehaviour:
   - {fileID: 1468651722}
   - {fileID: 303142087}
   - {fileID: 483014408}
+  currentExp: 0
   timeSlider: {fileID: 925367912}
+  gameStarted: 0
 --- !u!114 &221356898
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3088,6 +3090,7 @@ GameObject:
   - component: {fileID: 2129504806}
   - component: {fileID: 2129504807}
   - component: {fileID: 2129504808}
+  - component: {fileID: 2129504809}
   m_Layer: 0
   m_Name: LiangZi
   m_TagString: Player
@@ -3184,8 +3187,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.4677, y: -1.7173, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 364965491}
   - {fileID: 226223857}
@@ -3289,6 +3292,51 @@ CircleCollider2D:
   m_Offset: {x: 0, y: -0.48989743}
   serializedVersion: 2
   m_Radius: 0.9277902
+--- !u!61 &2129504809
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2129504801}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: -8.314479}
+  m_SpriteTilingProperty:
+    border: {x: 0.25, y: 0.25, z: 0.25, w: 0.25}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 2.8353755, y: 2.7653234}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 2
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 81.04076, y: 1.0214405}
+  m_EdgeRadius: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
