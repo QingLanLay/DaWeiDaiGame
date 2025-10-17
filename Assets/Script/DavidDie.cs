@@ -15,6 +15,8 @@ public class DavidDie : MonoBehaviour
     public List<Image> IconList;
     private GameObject prefab;
     private PlayerController player;
+    
+    // 经验条
     public int currentExp;
     // 滑动条
     public Slider timeSlider;

@@ -9,8 +9,11 @@ public class PlayerStatus : MonoBehaviour
     public Text attackText;
     public Text attackSpeedText;
     public Text speedText;
+    public Text scoreText;
     
     public PlayerController player;
+
+    public DavidDie davidDie;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,5 +27,6 @@ public class PlayerStatus : MonoBehaviour
         attackText.text = "血脂:" + player.Attack.ToString();
         attackSpeedText.text = "血压:" + player.AttackSpeed.ToString();
         speedText.text = "半月板强度:" + player.MaxSpeed.ToString();
+        scoreText.text = "得分:" + davidDie.currentExp.ToString();
     }
 }
