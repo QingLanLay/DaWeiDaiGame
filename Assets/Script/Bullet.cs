@@ -7,7 +7,8 @@ public class Bullet : MonoBehaviour
 {
     private Rigidbody2D rb;
     private float attack;
-
+    private bool isReturning;
+    
     public float Attack
     {
         get => attack;
@@ -39,14 +40,27 @@ public class Bullet : MonoBehaviour
 
     private void OnEnable()
     {
+        timeCount = 0;
+        isReturning = false;
+        
         rb.velocity = Vector2.up * 3f;
         attack = GetComponentInParent<PlayerController>().Attack;
     }
 
-    private void OnDisable() { }
+    private void OnDisable()
+    {
+        timeCount = 0;
+        isReturning = false;
+    }
 
     public void ReturnToPool()
     {
+        if (isReturning)
+        {
+            return;
+        }
+        isReturning = true;
+        
         this.transform.position = Vector3.zero;
         gameObject.SetActive(false);
         BulletManager.Instance.bulletPool.Enqueue(this.gameObject);

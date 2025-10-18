@@ -9,7 +9,8 @@ public class GameSettingPanelControl : MonoBehaviour
     public GameObject gameSettingPanel;
     public Button gameSettingButton;
     public Button backButton;
-    
+    public GameObject startPanel;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -17,11 +18,13 @@ public class GameSettingPanelControl : MonoBehaviour
         {
             gameSettingPanel = transform.Find("Button/GameSettingPanel")?.gameObject;
         }
-        
+
+        Time.timeScale = 0;
+
         gameSettingButton.onClick.AddListener(OpenGameSettingPanel);
         backButton.onClick.AddListener(CloseGameSettingPanel);
     }
-    
+
 
     public void OpenGameSettingPanel()
     {
@@ -34,7 +37,6 @@ public class GameSettingPanelControl : MonoBehaviour
         {
             gameSettingPanel.SetActive(false);
             Time.timeScale = 1;
-
         }
     }
 
@@ -42,5 +44,12 @@ public class GameSettingPanelControl : MonoBehaviour
     {
         gameSettingPanel.SetActive(false);
         Time.timeScale = 1;
+    }
+
+    public void StartGame()
+    {
+        Time.timeScale = 1;
+        gameSettingPanel.SetActive(false);
+        startPanel.SetActive(false);
     }
 }

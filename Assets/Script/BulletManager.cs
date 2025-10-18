@@ -7,12 +7,15 @@ public class BulletManager : SingletonMono<BulletManager>
     [SerializeField]
     private GameObject bullet;
 
+    protected GameObject mouth;
+
     // 子弹对象池
     public Queue<GameObject> bulletPool;
 
     protected override void Awake()
     {
         Initializer();
+         mouth = transform.Find("Mouth");
     }
 
     private void Initializer()
@@ -40,7 +43,7 @@ public class BulletManager : SingletonMono<BulletManager>
         if (bulletPool != null && bulletPool.Count > 0)
         {
             var bullet = bulletPool.Dequeue();
-            bullet.transform.position = this.transform.position;
+            bullet.transform.position = this.transform.position+new Vector3(0,1,0);
             bullet.SetActive(true);
             return bullet;
         }

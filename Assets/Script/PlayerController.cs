@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
 
     private float moveHorizontal;
     private float moveVertical;
+    private bool attackInput;
 
     // 基本属性：生命值、移速、攻击力、攻击频率
     [SerializeField]
@@ -75,17 +76,19 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         level = davidDie.level;
+        timeBullet += Time.deltaTime;
+
         // 获取输入值
         moveHorizontal = Input.GetAxisRaw("Horizontal");
         moveVertical = Input.GetAxisRaw("Vertical");
-
-        // 子弹计时器
-        timeBullet += Time.deltaTime;
-        if (timeBullet >= 5 / AttackSpeed)
+        attackInput = Input.GetKey(KeyCode.J);
+        if (attackInput && timeBullet >= 5 / AttackSpeed)
         {
-            PerformAttack();
-            timeBullet = 0;
-        }
+            {
+                PerformAttack();
+                timeBullet = 0;
+            }
+        } // 子弹计时器
 
         if (health == 0)
         {

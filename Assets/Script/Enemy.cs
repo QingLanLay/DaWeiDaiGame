@@ -72,6 +72,7 @@ public class Enemy : MonoBehaviour
         gameObject.transform.position = Vector3.zero;
         icon = null;
         spriteRenderer.sprite = null;
+        spriteRenderer.color = Color.white;
         this.gameObject.SetActive(false);
     }
     
