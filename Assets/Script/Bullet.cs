@@ -45,6 +45,8 @@ public class Bullet : MonoBehaviour
         
         rb.velocity = Vector2.up * 3f;
         attack = GetComponentInParent<PlayerController>().Attack;
+        
+
     }
 
     private void OnDisable()

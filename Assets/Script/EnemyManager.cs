@@ -18,12 +18,15 @@ public class EnemyManager : SingletonMono<EnemyManager>
 
     public Queue<GameObject> enemyPool;
 
+    private PlayerController playerController;
+
     // 计时器
     private float timeCount;
 
      protected override void Awake()
     {
         base.Awake();
+        playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
         
         enemyDic = new Dictionary<int, EnemyData>();
 
@@ -94,6 +97,10 @@ public class EnemyManager : SingletonMono<EnemyManager>
 
     private EnemyData GetEnemyType()
     {
+        if (playerController.level >=2)
+        {
+            return enemyDic[1];
+        }
         return enemyDic[0];
     }
 }

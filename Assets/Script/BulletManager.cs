@@ -6,16 +6,18 @@ public class BulletManager : SingletonMono<BulletManager>
     // 子弹预制体
     [SerializeField]
     private GameObject bullet;
-
-    protected GameObject mouth;
+    private GameObject mouth;
 
     // 子弹对象池
     public Queue<GameObject> bulletPool;
 
-    protected override void Awake()
+
+    protected override  void Awake()
     {
-        Initializer();
-         mouth = transform.Find("Mouth");
+        base.Awake();
+        
+        Initializer(); 
+        mouth = transform.parent.Find("Mouth")?.gameObject;
     }
 
     private void Initializer()
@@ -50,8 +52,16 @@ public class BulletManager : SingletonMono<BulletManager>
         // 对象池内无对象
         if (bulletPool != null)
         {
+            if (mouth is not null)
+            {
+                bullet.transform.position = mouth.transform.position;
+            }
+            else
+            {
+                bullet.transform.position = this.transform.position;
+            }
+            
             bullet = Instantiate(bullet, transform);
-            bullet.transform.position = this.transform.position;
             return bullet;
         }
         
