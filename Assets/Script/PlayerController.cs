@@ -33,7 +33,7 @@ public class PlayerController : MonoBehaviour
 
     public DavidDie davidDie;
 
-    [Range(0,5)]
+    [Range(0, 5)]
     public int level = 1;
 
 #region 属性
@@ -131,12 +131,7 @@ public class PlayerController : MonoBehaviour
             Debug.Log("受到了伤害:" + enemyAttack);
             enemy.Dead();
         }
-        
 
-    }
-
-    private void OnTriggerExit2D(Collider2D other)
-    {
         if (other.CompareTag("Food"))
         {
             // 如果可以吃，则执行吃方法
@@ -149,6 +144,8 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+
+    private void OnTriggerExit2D(Collider2D other) { }
 
     private void Dead() { }
 }
