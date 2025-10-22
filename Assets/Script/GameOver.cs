@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameOver : SingletonMono<GameOver>
+public class GameOver : MonoBehaviour
 {
     public Image gameOverImage;
     public Button restartButton;
@@ -16,8 +16,9 @@ public class GameOver : SingletonMono<GameOver>
     private DavidDie davidDieCp;
     
     // Start is called before the first frame update
-    void Start()
+     void Awake()
     {
+
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
         davidDieCp = davidDie.GetComponent<DavidDie>();
     }
@@ -37,4 +38,17 @@ public class GameOver : SingletonMono<GameOver>
     {
         
     }
+
+    public void OpenPanel()
+    {
+        Time.timeScale = 0;
+        gameObject.SetActive(true);
+    }
+
+    void ClosePanel()
+    {
+        gameObject.SetActive(false);
+
+    }
+    
 }

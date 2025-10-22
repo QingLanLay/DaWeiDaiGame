@@ -36,6 +36,8 @@ public class PlayerController : MonoBehaviour
 
     [Range(0, 5)]
     public int level = 1;
+    
+    public GameObject gameOver;
 
 #region 属性
 
@@ -90,10 +92,11 @@ public class PlayerController : MonoBehaviour
             }
         } // 子弹计时器
 
-        if (health == 0)
+        if (health <= 0)
         {
             Dead();
         }
+        
     }
 
 
@@ -149,5 +152,8 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    private void Dead() { }
+    private void Dead()
+    {
+        gameOver.GetComponent<GameOver>().OpenPanel();
+    }
 }
