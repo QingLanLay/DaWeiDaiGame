@@ -4,11 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1934e327-0f41-4659-9ba1-090f474a1eb5" name="更改" comment="">
-      <change beforePath="$PROJECT_DIR$/Assets/Script/GameOver.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Script/GameOver.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Script/PlayerController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Script/PlayerController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectSettings/ProjectVersion.txt" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/ProjectVersion.txt" afterDir="false" />
-    </list>
+    <list default="true" id="1934e327-0f41-4659-9ba1-090f474a1eb5" name="更改" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -94,7 +90,7 @@
       <workItem from="1760258993805" duration="3220000" />
       <workItem from="1760324176277" duration="7000" />
       <workItem from="1760932896949" duration="1984000" />
-      <workItem from="1761095015547" duration="652000" />
+      <workItem from="1761095015547" duration="1964000" />
     </task>
     <servers />
   </component>

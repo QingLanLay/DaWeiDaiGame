@@ -1831,9 +1831,9 @@ RectTransform:
   - {fileID: 483777010}
   m_Father: {fileID: 1165797803}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 810, y: -100}
   m_SizeDelta: {x: 380, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &644593613
@@ -3977,7 +3977,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1566435035
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4016,8 +4016,8 @@ MonoBehaviour:
   restartButton: {fileID: 2002054370}
   quitButton: {fileID: 644593613}
   scoreText: {fileID: 1045601059}
-  player: {fileID: 0}
-  davidDie: {fileID: 0}
+  player: {fileID: 2129504806}
+  davidDie: {fileID: 221356895}
 --- !u!114 &1566435037
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4639,9 +4639,9 @@ RectTransform:
   - {fileID: 876671986}
   m_Father: {fileID: 1165797803}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 270, y: -100}
   m_SizeDelta: {x: 380, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2002054370
@@ -4862,6 +4862,7 @@ MonoBehaviour:
   attackSpeed: 1
   davidDie: {fileID: 221356897}
   level: 0
+  gameOver: {fileID: 1566435034}
 --- !u!61 &2129504807
 BoxCollider2D:
   m_ObjectHideFlags: 0
