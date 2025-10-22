@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -61,6 +62,7 @@ public class EnemyManager : SingletonMono<EnemyManager>
 
     public float enemyUpdateTime = 5f;
     public float bossUpdateTime = 30f;
+
     void Update()
     {
         timeCount += Time.deltaTime;
@@ -80,33 +82,54 @@ public class EnemyManager : SingletonMono<EnemyManager>
 
     private GameObject GetOrCreatEnemy(bool boss)
     {
-        // 根据规则获取敌人数据
+        // 安全检查
+        if (playerController == null)
+            return null;
+
         EnemyData enemyData = GetEnemyType(boss);
-        float range = Random.Range(-2.5f, 2.5f);
-        // 对象池还有对象
-        if (enemyPool != null && enemyPool.Count > 0)
+        if (enemyData == null)
         {
-            // 取出GameObject，激活，随机位置
-            var enemy = enemyPool.Dequeue();
-            enemy.GetComponent<Enemy>().GetEnemyData(enemyData);
-
-            enemy.SetActive(true);
-            enemy.transform.position =
-                new Vector3(transform.position.x + range, transform.position.y, transform.position.z);
-            enemy.transform.rotation = Quaternion.identity;
-
-            // 数据注入
-
-            return enemy;
+            UnityEngine.Debug.LogError("EnemyData is null!");
+            return null;
         }
 
-        // 对象池没有对象，新建对象
-        var aEnemy = GameObject.Instantiate(defualtEnemy, transform);
-        aEnemy.transform.position =
-            new Vector3(transform.position.x + range, transform.position.y, transform.position.z);
-        aEnemy.GetComponent<Enemy>().GetEnemyData(enemyData);
-        return aEnemy;
+        float range = Random.Range(-2.5f, 2.5f);
+        GameObject enemy = null;
+
+        // 清理对象池中的null对象
+        enemyPool = new Queue<GameObject>(enemyPool.Where(x => x != null));
+
+        if (enemyPool.Count > 0)
+        {
+            enemy = enemyPool.Dequeue();
+            // 确保对象有效
+            if (enemy == null)
+                return GetOrCreatEnemy(boss); // 递归重试
+        }
+        else
+        {
+            // 对象池没有对象，新建对象
+            enemy = GameObject.Instantiate(defualtEnemy, transform);
+        }
+
+        // 配置敌人
+        var enemyComponent = enemy.GetComponent<Enemy>();
+        if (enemyComponent != null)
+        {
+            enemyComponent.GetEnemyData(enemyData);
+        }
+
+        enemy.transform.position = new Vector3(
+            transform.position.x + range,
+            transform.position.y,
+            transform.position.z
+        );
+        enemy.transform.rotation = Quaternion.identity;
+        enemy.SetActive(true);
+
+        return enemy;
     }
+
 
     private EnemyData GetEnemyType(bool boss)
     {

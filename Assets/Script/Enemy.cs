@@ -30,8 +30,9 @@ public class Enemy : MonoBehaviour
 
     public GameObject player;
 
-    // 随机移动字段
-    public float downSpeed = 2f; // 向下移动的速度
+    private bool isDead = false;
+
+
     public float horizontalSpeed = 3f; // 水平移动的速度
     public float directionChangeInterval = 1f; // 方向改变间隔（秒）
     private float timer = 0f;
@@ -54,8 +55,107 @@ public class Enemy : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
         // 初始随机方向
         ChangeDirection(0);
-        level = player.GetComponent<PlayerController>().level;
         }
+
+    private void OnEnable()
+    {
+        isDead = false;
+        // 确保物理状态重置
+        if (rb != null)
+        {
+            rb.velocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+        }
+    }
+
+    private void OnDisable()
+    {
+        StopAllCoroutines();
+    }
+    
+    public void GetEnemyData(EnemyData enemyData)
+    {
+        // 每次获取数据时都重新获取玩家等级
+        if (player == null)
+            player = GameObject.FindGameObjectWithTag("Player");
+            
+        level = player.GetComponent<PlayerController>().level;
+
+        ID = enemyData.ID;
+        health = enemyData.Health;
+        speed = enemyData.Speed;
+        attack = enemyData.Attack;
+        icon = enemyData.Icon;
+        exp = enemyData.Exp;
+        
+        spriteRenderer.sprite = icon;
+        spriteRenderer.size = new Vector2(1, 1);
+        spriteRenderer.color = Color.white;
+
+        if (level > 1)
+        {
+            health += 100 * level;
+            attack += 100 * level;
+            speed += 1 * level * 0.5f;
+            exp += 100 * level;
+        }
+
+        // 重置移动状态
+        timer = 0f;
+        isRushing = false;
+        nextBehaviorChangeTime = 0f;
+        ChangeDirection(ID);
+    }
+    
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (isDead) return;
+            
+        
+        if (other.CompareTag("Bullet"))
+        {
+            health -= other.GetComponent<Bullet>().Attack;
+            var bullet = other.GetComponent<Bullet>();
+            bullet.ReturnToPool();
+            animator.SetTrigger("BeAttack");
+        }
+
+        if (health <= 0)
+        {
+            isDead = true;
+            var davidDie = GameObject.FindWithTag("UI").GetComponent<DavidDie>();
+            davidDie.UpLevel(exp);
+            Dead();
+        }
+    }
+    
+    public void Dead()
+    {
+        if (!isDead)
+        {
+            isDead = true;
+        }
+
+        if (rb != null)
+        {
+            rb.velocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+        }
+        StopAllCoroutines();
+        
+        // 重置位置到管理器位置而不是(0,0,0)
+        transform.position = EnemyManager.Instance.transform.position;
+        
+        EnemyManager.Instance.enemyPool.Enqueue(this.gameObject);
+        gameObject.transform.position = Vector3.zero;
+        
+        icon = null;
+        
+        spriteRenderer.sprite = null;
+        spriteRenderer.color = Color.white;
+        this.gameObject.SetActive(false);
+    }
+
 
 
     private void Update()
@@ -98,7 +198,7 @@ public class Enemy : MonoBehaviour
                 rb.velocity = Vector2.down * speed;
                 break;
             case 1:
-                movement = new Vector2(horizontalDirection * horizontalSpeed, -downSpeed);
+                movement = new Vector2(horizontalDirection * horizontalSpeed, -speed);
                 rb.velocity = movement;
                 break;
             case 2:
@@ -131,7 +231,7 @@ public class Enemy : MonoBehaviour
                     isRushing = !isRushing;
                 }
 
-                movement = new Vector2(horizontalDirection * horizontalSpeed, -downSpeed);
+                movement = new Vector2(horizontalDirection * horizontalSpeed, -speed);
                 rb.velocity = movement;
                 break;
             default:
@@ -197,55 +297,9 @@ public class Enemy : MonoBehaviour
     }
 
 
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag("Bullet"))
-        {
-            health -= other.GetComponent<Bullet>().Attack;
-            var bullet = other.GetComponent<Bullet>();
-            bullet.ReturnToPool();
-            animator.SetTrigger("BeAttack");
-        }
-
-        if (health <= 0)
-        {
-            var davidDie = GameObject.FindWithTag("UI").GetComponent<DavidDie>();
-            davidDie.UpLevel(exp);
-            Dead();
-        }
-    }
-
-    private void OnEnable() { }
-
-    public void Dead()
-    {
-        EnemyManager.Instance.enemyPool.Enqueue(this.gameObject);
-        gameObject.transform.position = Vector3.zero;
-        icon = null;
-        spriteRenderer.sprite = null;
-        spriteRenderer.color = Color.white;
-        StopAllCoroutines();
-        this.gameObject.SetActive(false);
-    }
+    
 
 
-    public void GetEnemyData(EnemyData enemyData)
-    {
-        ID = enemyData.ID;
-        health = enemyData.Health;
-        speed = enemyData.Speed;
-        attack = enemyData.Attack;
-        icon = enemyData.Icon;
-        spriteRenderer.sprite = icon;
-        exp = enemyData.Exp;
-        spriteRenderer.size = new Vector2(1, 1);
 
-        if (level > 1)
-        {
-            health += 100 * level;
-            attack += 100 * level;
-            speed += 1 * level;
-            exp += 100 * level;
-        }
-    }
+    
 }

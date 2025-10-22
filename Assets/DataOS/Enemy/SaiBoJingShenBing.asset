@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: SaiBoJingShenBing
   m_EditorClassIdentifier: 
   id: 0
-  enemyName: 
+  enemyName: "\u8D5B\u535A\u7CBE\u795E\u75C5"
   speed: 1
   attack: 10
   health: 500

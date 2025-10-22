@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c306ed4b1644e2a8920d287329ad3c8, type: 3}
   m_Name: YuJie
   m_EditorClassIdentifier: 
-  id: 0
-  enemyName: 
-  speed: 0
-  attack: 0
-  health: 0
-  exp: 0
-  icon: {fileID: 0}
+  id: 2
+  enemyName: "\u96E8\u59D0"
+  speed: 3
+  attack: 1000
+  health: 10000
+  exp: 100000
+  icon: {fileID: 21300000, guid: 93d997e479968f6419e000c04d5a0e0e, type: 3}
