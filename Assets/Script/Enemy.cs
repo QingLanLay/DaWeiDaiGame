@@ -92,19 +92,35 @@ public class Enemy : MonoBehaviour
         spriteRenderer.size = new Vector2(1, 1);
         spriteRenderer.color = Color.white;
 
-        if (level > 1)
-        {
-            health += 100 * level;
-            attack += 100 * level;
-            speed += 1 * level * 0.5f;
-            exp += 100 * level;
-        }
+        ApplyLevelScaling(level);
 
         // 重置移动状态
         timer = 0f;
         isRushing = false;
         nextBehaviorChangeTime = 0f;
         ChangeDirection(ID);
+    }
+    
+    public EnemyScaling scaling;
+
+    public void ApplyLevelScaling(int level)
+    {
+        if (level <= 1) return;
+        
+        // 计算等级加成
+        float levelBonus = level - 1;
+        
+        // 应用缩放，但不超过最大限制
+        float healthMultiplier = Mathf.Min(1 + levelBonus * scaling.healthScale, scaling.maxHealthMultiplier);
+        float attackMultiplier = Mathf.Min(1 + levelBonus * scaling.attackScale, scaling.maxAttackMultiplier);
+        float speedMultiplier = Mathf.Min(1 + levelBonus * scaling.speedScale, scaling.maxSpeedMultiplier);
+        float expMultiplier = 1 + levelBonus * scaling.expScale; // 经验值无上限
+        
+        health = health * healthMultiplier;
+        attack = attack * attackMultiplier;
+        speed = speed * speedMultiplier;
+        exp = Mathf.RoundToInt(exp * expMultiplier);
+        
     }
     
     private void OnTriggerEnter2D(Collider2D other)
@@ -297,11 +313,20 @@ public class Enemy : MonoBehaviour
         horizontalDirection = Random.Range(-1, 2);
         directionChangeInterval = Random.Range(minInterval, maxInterval); // 随机间隔时间
     }
-
-
     
+}
 
-
-
+[System.Serializable]
+public class EnemyScaling
+{
+    [Header("等级缩放系数")]
+    public float healthScale = 0.3f;        // 生命值每级增长百分比
+    public float attackScale = 0.25f;       // 攻击力每级增长百分比
+    public float speedScale = 0.1f;         // 速度每级增长百分比
+    public float expScale = 0.4f;           // 经验值每级增长百分比
     
+    [Header("最大增长限制")]
+    public float maxHealthMultiplier = 3f;  // 生命值最大倍数
+    public float maxAttackMultiplier = 2.5f; // 攻击力最大倍数
+    public float maxSpeedMultiplier = 1.5f; // 速度最大倍数
 }

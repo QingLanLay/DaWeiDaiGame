@@ -5355,9 +5355,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 100
-  currentSpeed: 3
-  attack: 1
-  attackSpeed: 1
+  currentSpeed: 4
+  attack: 10
+  attackSpeed: 0.8
   davidDie: {fileID: 221356897}
   level: 0
   gameOver: {fileID: 1566435034}

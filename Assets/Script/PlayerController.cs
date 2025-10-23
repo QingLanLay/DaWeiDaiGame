@@ -16,17 +16,17 @@ public class PlayerController : MonoBehaviour
 
     // 基本属性：生命值、移速、攻击力、攻击频率
     [SerializeField]
-    private float health = 100f;
+    private float health = 150f;
 
     [FormerlySerializedAs("maxSpeed")]
     [SerializeField]
-    private float currentSpeed = 3f;
+    private float currentSpeed = 4f;
 
     [SerializeField]
-    private float attack = 1f;
+    private float attack = 10f;
 
     [SerializeField]
-    private float attackSpeed = 1f;
+    private float attackSpeed = 0.8f;
 
     private float maxSpeed;
 
@@ -72,7 +72,7 @@ public class PlayerController : MonoBehaviour
     {
         startV3 = this.transform.position;
         rb = GetComponent<Rigidbody2D>();
-        maxSpeed = 8f;
+        maxSpeed = 10f;
         level = 1;
     }
 
@@ -86,7 +86,9 @@ public class PlayerController : MonoBehaviour
         moveHorizontal = Input.GetAxisRaw("Horizontal");
         moveVertical = Input.GetAxisRaw("Vertical");
         attackInput = Input.GetKey(KeyCode.J);
-        if (attackInput && timeBullet >= 5 / AttackSpeed)
+        
+        float attackInterval = 1f / attackSpeed;
+        if (attackInput && timeBullet >= attackInterval)
         {
             {
                 PerformAttack();

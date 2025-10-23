@@ -15,8 +15,8 @@ MonoBehaviour:
   id: 1
   type: 1
   foodName: 1
-  addSpeed: 1
-  addHeath: 1
+  addSpeed: 0.2
+  addHeath: 5
   addAttack: 1
   addAttackSpeed: 0.1
   damage: 0
