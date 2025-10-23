@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     private float moveHorizontal;
     private float moveVertical;
     private bool attackInput;
+    private Vector3 startV3;
 
     // 基本属性：生命值、移速、攻击力、攻击频率
     [SerializeField]
@@ -69,6 +70,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        startV3 = this.transform.position;
         rb = GetComponent<Rigidbody2D>();
         maxSpeed = 8f;
         level = 1;
@@ -155,5 +157,35 @@ public class PlayerController : MonoBehaviour
     private void Dead()
     {
         gameOver.GetComponent<GameOver>().OpenPanel();
+    }
+    
+    public void InitializePlayer()
+    {
+        this.transform.position = startV3;
+        
+        // 重置基本属性
+        health = 100f;
+        currentSpeed = 3f;
+        attack = 1f;
+        attackSpeed = 1f;
+        
+        // 重置计时器和等级
+        timeBullet = 0f;
+        level = 1;
+        
+        // 重置物理状态
+        if (rb != null)
+        {
+            rb.velocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+        }
+        
+        // 确保玩家对象激活
+        gameObject.SetActive(true);
+        
+        // 重置位置（如果需要，可以传入初始位置参数）
+        // transform.position = initialPosition;
+        
+        Debug.Log("玩家已初始化");
     }
 }

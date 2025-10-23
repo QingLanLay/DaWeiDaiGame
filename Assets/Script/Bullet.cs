@@ -67,4 +67,6 @@ public class Bullet : MonoBehaviour
         gameObject.SetActive(false);
         BulletManager.Instance.bulletPool.Enqueue(this.gameObject);
     }
+    
+
 }

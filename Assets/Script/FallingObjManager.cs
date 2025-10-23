@@ -136,4 +136,76 @@
             aFood.SetActive(true);
             return aFood;
         }
+        
+        /// <summary>
+        /// 初始化掉落物管理器，重置所有状态
+        /// </summary>
+        public void InitializeFallingObjManager()
+        {
+            // 重置计时器
+            timeCount = 0f;
+    
+            // 回收所有已激活的食物对象
+            ReturnAllActiveFoodsToPool();
+    
+            // 重新初始化对象池
+            ReinitializePool();
+    
+            Debug.Log("掉落物管理器已初始化");
+        }
+
+        /// <summary>
+        /// 回收所有活跃的食物对象到对象池
+        /// </summary>
+        private void ReturnAllActiveFoodsToPool()
+        {
+            // 遍历所有子物体，回收激活的食物
+            foreach (Transform child in transform)
+            {
+                if (child.gameObject.activeInHierarchy)
+                {
+                    Food foodComponent = child.GetComponent<Food>();
+                    if (foodComponent != null)
+                    {
+                        // 直接调用回收方法
+                        ReturnToFoodPool(child.gameObject);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 重新初始化对象池
+        /// </summary>
+        private void ReinitializePool()
+        {
+            // 清空现有对象池
+            if (objectPool != null)
+            {
+                objectPool.Clear();
+            }
+            else
+            {
+                objectPool = new Queue<GameObject>();
+            }
+    
+            // 销毁所有现有子物体
+            foreach (Transform child in transform)
+            {
+                Destroy(child.gameObject);
+            }
+    
+            // 重新创建初始对象池
+            for (int i = 0; i < 5; i++)
+            {
+                GameObject newFood = Instantiate(food, this.transform);
+                var foodComponent = newFood.GetComponent<Food>();
+                if (foodComponent != null)
+                {
+                    foodComponent.SetReturnToPool(ReturnToFoodPool);
+                }
+                newFood.SetActive(false);
+                objectPool.Enqueue(newFood);
+            }
+        }
     }

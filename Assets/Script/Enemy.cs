@@ -155,6 +155,8 @@ public class Enemy : MonoBehaviour
         spriteRenderer.color = Color.white;
         this.gameObject.SetActive(false);
     }
+    
+
 
 
 

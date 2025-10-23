@@ -12,15 +12,12 @@ public class GameOver : MonoBehaviour
     public Text scoreText;
     public event Action StartGame;
     public PlayerController player;
-    public GameObject davidDie;
-    private DavidDie davidDieCp;
+    public DavidDie davidDieCp;
     
     // Start is called before the first frame update
      void Awake()
     {
-
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
-        davidDieCp = davidDie.GetComponent<DavidDie>();
     }
 
     // Update is called once per frame
@@ -29,14 +26,23 @@ public class GameOver : MonoBehaviour
         scoreText.text = "得分:" + davidDieCp.currentExp;
     }
 
-    void Quit()
+   public void Quit()
     {
-        Quit();
+       Application.Quit();
     }
 
     public void RetunGame()
     {
-        
+        player.InitializePlayer();
+        FallingObjManager.Instance.InitializeFallingObjManager();
+        EnemyManager.Instance.InitializeEnemyManager();
+        davidDieCp.InitializeDavidDie();
+        BulletManager.Instance.InitializeBulletManager();
+
+        if (gameObject.activeSelf == true)
+        {
+            ClosePanel();
+        }
     }
 
     public void OpenPanel()
@@ -47,8 +53,8 @@ public class GameOver : MonoBehaviour
 
     void ClosePanel()
     {
+        Time.timeScale = 1;
         gameObject.SetActive(false);
-
     }
     
 }

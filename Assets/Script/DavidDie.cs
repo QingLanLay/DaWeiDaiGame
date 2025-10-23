@@ -193,4 +193,59 @@ public class DavidDie : MonoBehaviour
             }
         }
     }
+    
+    /// <summary>
+    /// 初始化大卫的胃系统，重置所有状态
+    /// </summary>
+    public void InitializeDavidDie()
+    {
+        // 重置等级和经验
+        level = 1;
+        currentExp = 0;
+    
+        // 清空胃袋中的食物
+        if (inDavidDie != null)
+        {
+            inDavidDie.Clear();
+        }
+        else
+        {
+            inDavidDie = new List<FoodName>();
+        }
+    
+        // 重置计时器
+        time = 0f;
+    
+        // 重置UI图标
+        ResetAllIcons();
+    
+        // 重置进度条
+        if (timeSlider != null)
+        {
+            timeSlider.value = 1f;
+        }
+    
+        // 重置游戏状态（根据需求决定是否重置）
+        // gameStarted = false;
+    
+        Debug.Log("大卫的胃系统已初始化");
+    }
+
+    /// <summary>
+    /// 重置所有食物图标显示
+    /// </summary>
+    private void ResetAllIcons()
+    {
+        if (IconList != null)
+        {
+            foreach (var icon in IconList)
+            {
+                if (icon != null)
+                {
+                    icon.sprite = null;
+                    icon.color = Color.clear;
+                }
+            }
+        }
+    }
 }

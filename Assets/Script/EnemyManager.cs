@@ -159,4 +159,102 @@ public class EnemyManager : SingletonMono<EnemyManager>
 
         return enemyDic[0];
     }
+    
+    /// <summary>
+    /// 初始化敌人管理器，重置所有状态
+    /// </summary>
+    public void InitializeEnemyManager()
+    {
+        // 重置计时器
+        timeCount = 0f;
+        timeBossCount = 0f;
+    
+        // 回收所有活跃的敌人
+        ReturnAllActiveEnemiesToPool();
+    
+        // 重新初始化对象池
+        ReinitializeEnemyPool();
+    
+        // 重置生成时间间隔（如果需要）
+        // enemyUpdateTime = 5f;
+        // bossUpdateTime = 30f;
+    
+    }
+
+    /// <summary>
+    /// 回收所有活跃的敌人对象到对象池
+    /// </summary>
+    private void ReturnAllActiveEnemiesToPool()
+    {
+        // 遍历所有子物体，回收激活的敌人
+        foreach (Transform child in transform)
+        {
+            if (child.gameObject.activeInHierarchy)
+            {
+                Enemy enemyComponent = child.GetComponent<Enemy>();
+                if (enemyComponent != null)
+                {
+                    // 调用敌人的回收方法或直接处理
+                    ReturnEnemyToPool(child.gameObject);
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// 将敌人回收到对象池
+    /// </summary>
+    /// <param name="enemy">敌人对象</param>
+    private void ReturnEnemyToPool(GameObject enemy)
+    {
+        if (enemy == null) return;
+    
+        // 重置敌人状态
+        Enemy enemyComponent = enemy.GetComponent<Enemy>();
+        if (enemyComponent != null)
+        {
+            enemyComponent.Dead(); // 假设 Enemy 类有重置方法
+        }
+    
+        enemy.SetActive(false);
+        enemy.transform.SetParent(transform);
+    
+        // 如果对象池不为空且不包含该对象，则加入对象池
+        if (enemyPool != null && !enemyPool.Contains(enemy))
+        {
+            enemyPool.Enqueue(enemy);
+        }
+    }
+
+    /// <summary>
+    /// 重新初始化敌人对象池
+    /// </summary>
+    private void ReinitializeEnemyPool()
+    {
+        // 清空现有对象池
+        if (enemyPool != null)
+        {
+            enemyPool.Clear();
+        }
+        else
+        {
+            enemyPool = new Queue<GameObject>();
+        }
+    
+        // 销毁所有现有子物体
+        foreach (Transform child in transform)
+        {
+            Destroy(child.gameObject);
+        }
+    
+        // 重新创建初始对象池
+        for (int i = 0; i < 5; i++)
+        {
+            GameObject newEnemy = Instantiate(defualtEnemy, transform);
+            newEnemy.SetActive(false);
+            enemyPool.Enqueue(newEnemy);
+        }
+    }
+    
+
 }
