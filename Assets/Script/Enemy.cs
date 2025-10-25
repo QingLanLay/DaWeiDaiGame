@@ -32,7 +32,6 @@ public class Enemy : MonoBehaviour
 
     private bool isDead = false;
 
-
     public float horizontalSpeed = 3f; // 水平移动的速度
     public float directionChangeInterval = 1f; // 方向改变间隔（秒）
     private float timer = 0f;
@@ -45,7 +44,6 @@ public class Enemy : MonoBehaviour
         get => attack;
     }
 
-
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -55,7 +53,7 @@ public class Enemy : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
         // 初始随机方向
         ChangeDirection(0);
-        }
+    }
 
     private void OnEnable()
     {
@@ -86,13 +84,25 @@ public class Enemy : MonoBehaviour
         speed = enemyData.Speed;
         attack = enemyData.Attack;
         icon = enemyData.Icon;
-        exp = enemyData.Exp;
+        exp = enemyData.Exp; // 基础经验值
+        
+        // 调试输出基础经验值
+        if (ID == 2) // BOSS敌人
+        {
+            Debug.Log($"BOSS基础经验值: {exp}, 玩家等级: {level}");
+        }
         
         spriteRenderer.sprite = icon;
         spriteRenderer.size = new Vector2(1, 1);
         spriteRenderer.color = Color.white;
 
         ApplyLevelScaling(level);
+        
+        // 调试输出缩放后的经验值
+        if (ID == 2) // BOSS敌人
+        {
+            Debug.Log($"BOSS最终经验值: {exp} (缩放后)");
+        }
 
         // 重置移动状态
         timer = 0f;
@@ -114,20 +124,27 @@ public class Enemy : MonoBehaviour
         float healthMultiplier = Mathf.Min(1 + levelBonus * scaling.healthScale, scaling.maxHealthMultiplier);
         float attackMultiplier = Mathf.Min(1 + levelBonus * scaling.attackScale, scaling.maxAttackMultiplier);
         float speedMultiplier = Mathf.Min(1 + levelBonus * scaling.speedScale, scaling.maxSpeedMultiplier);
-        float expMultiplier = 1 + levelBonus * scaling.expScale; // 经验值无上限
+        
+        // 修复：为经验值也添加上限，防止异常增长
+        float expMultiplier = Mathf.Min(1 + levelBonus * scaling.expScale, scaling.maxExpMultiplier);
         
         health = health * healthMultiplier;
         attack = attack * attackMultiplier;
         speed = speed * speedMultiplier;
         exp = Mathf.RoundToInt(exp * expMultiplier);
         
+        // 添加经验值上限检查 - 防止单个敌人提供过多经验
+        if (exp > 50000) // 单个敌人最多提供5万经验
+        {
+            Debug.LogWarning($"敌人经验值异常: {exp}，已限制为50000");
+            exp = 50000;
+        }
     }
     
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (isDead) return;
             
-        
         if (other.CompareTag("Bullet"))
         {
             health -= other.GetComponent<Bullet>().Attack;
@@ -140,7 +157,16 @@ public class Enemy : MonoBehaviour
         {
             isDead = true;
             var davidDie = GameObject.FindWithTag("UI").GetComponent<DavidDie>();
-            davidDie.UpLevel(exp);
+            
+            // 添加经验值安全检查
+            int safeExp = exp;
+            if (safeExp > 100000) // 如果经验值异常高
+            {
+                Debug.LogError($"异常经验值: {safeExp}，已限制为10000");
+                safeExp = 10000;
+            }
+            
+            davidDie.UpLevel(safeExp);
             Dead();
         }
     }
@@ -150,6 +176,13 @@ public class Enemy : MonoBehaviour
         if (!isDead)
         {
             isDead = true;
+    
+            // 通知敌人管理器敌人被击败 - 使用BOSS列表判断
+            if (EnemyManager.Instance != null)
+            {
+                bool wasBoss = EnemyManager.Instance.IsBossEnemy(ID);
+                EnemyManager.Instance.OnEnemyDefeated(wasBoss);
+            }
         }
 
         if (rb != null)
@@ -158,23 +191,78 @@ public class Enemy : MonoBehaviour
             rb.angularVelocity = 0f;
         }
         StopAllCoroutines();
-        
-        // 重置位置到管理器位置而不是(0,0,0)
-        transform.position = EnemyManager.Instance.transform.position;
-        
-        EnemyManager.Instance.enemyPool.Enqueue(this.gameObject);
-        gameObject.transform.position = Vector3.zero;
-        
-        icon = null;
-        
-        spriteRenderer.sprite = null;
-        spriteRenderer.color = Color.white;
-        this.gameObject.SetActive(false);
-    }
+
+        // 重置敌人状态
+        ResetEnemyState();
     
+        // 回收到对象池
+        ReturnToPool();
+    }
 
+    /// <summary>
+    /// 重置敌人状态
+    /// </summary>
+    private void ResetEnemyState()
+    {
+        // 重置到管理器位置
+        if (EnemyManager.Instance != null)
+        {
+            transform.position = EnemyManager.Instance.transform.position;
+        }
+        else
+        {
+            transform.position = Vector3.zero;
+        }
+        transform.rotation = Quaternion.identity;
+    
+        // 重置其他状态
+        isDead = false;
+        health = 0; // 会在GetEnemyData中重新设置
+        timer = 0f;
+        isRushing = false;
+        nextBehaviorChangeTime = 0f;
+        horizontalDirection = 0;
+    
+        // 重置渲染器
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.sprite = null;
+            spriteRenderer.color = Color.white;
+            spriteRenderer.size = new Vector2(1, 1);
+        }
+    
+        // 重置动画
+        if (animator != null)
+        {
+            animator.Rebind();
+            animator.Update(0f);
+        }
+    }
 
-
+    /// <summary>
+    /// 返回对象池
+    /// </summary>
+    private void ReturnToPool()
+    {
+        // 确保组件禁用
+        if (rb != null)
+        {
+            rb.velocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+        }
+    
+        // 禁用游戏对象
+        gameObject.SetActive(false);
+    
+        // 设置父对象
+        if (EnemyManager.Instance != null)
+        {
+            transform.SetParent(EnemyManager.Instance.transform);
+    
+            // 入队对象池
+            EnemyManager.Instance.enemyPool.Enqueue(this.gameObject);
+        }
+    }
 
     private void Update()
     {
@@ -278,17 +366,18 @@ public class Enemy : MonoBehaviour
     public float normalSpeed = 2f;
     public float rushSpeed = 8f;
 
-// 一个简单的辅助方法，判断玩家在左还是右
+    // 一个简单的辅助方法，判断玩家在左还是右
     private int GetPlayerDirection()
     {
         // 假设你有一个参考玩家位置的对象，比如 player.transform
-        if (player.transform.position.x > transform.position.x) return 1;
-        else return -1;
+        if (player != null && player.transform.position.x > transform.position.x) 
+            return 1;
+        else 
+            return -1;
     }
 
     [Header("随机性设置")]
     public float minInterval = 0.5f;
-
     public float maxInterval = 2f;
 
     void ChangeDirection(int id)
@@ -313,7 +402,6 @@ public class Enemy : MonoBehaviour
         horizontalDirection = Random.Range(-1, 2);
         directionChangeInterval = Random.Range(minInterval, maxInterval); // 随机间隔时间
     }
-    
 }
 
 [System.Serializable]
@@ -329,4 +417,5 @@ public class EnemyScaling
     public float maxHealthMultiplier = 3f;  // 生命值最大倍数
     public float maxAttackMultiplier = 2.5f; // 攻击力最大倍数
     public float maxSpeedMultiplier = 1.5f; // 速度最大倍数
+    public float maxExpMultiplier = 5f;     // 新增：经验值最大倍数
 }
