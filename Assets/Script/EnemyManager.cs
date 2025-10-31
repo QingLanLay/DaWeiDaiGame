@@ -131,183 +131,15 @@ public class EnemyManager : SingletonMono<EnemyManager>
         UpdateWaveSystem();
         UpdateEnemySpawning();
         UpdateBossSpawning();
+        
+        DebugEnemyWeights();
     }
+
+    // ========== 敌人生成相关方法 ==========
 
     /// <summary>
-    /// 更新波次系统
+    /// 获取或创建敌人
     /// </summary>
-    private void UpdateWaveSystem()
-    {
-        // 每60帧输出一次调试信息
-        if (Time.frameCount % 60 == 0)
-        {
-            int extraEnemies = CalculateExtraEnemiesFromExp();
-            float speedBoost = CalculateSpawnSpeedBoost();
-
-            Debug.Log($"Wave: {currentWave}, Progress: {waveProgress:F2}, " +
-                      $"IsBossWave: {isBossWave}, WaitingForBoss: {waitingForBossSpawn}, " +
-                      $"BossDefeated: {bossDefeatedInCurrentWave}, EXP: {exp}");
-        }
-    }
-
-    /// <summary>
-    /// 更新普通敌人生成 - 修复BOSS击败后的状态
-    /// </summary>
-    private void UpdateEnemySpawning()
-    {
-        // 只有当不在BOSS波次、不等待BOSS生成、且当前波次BOSS未被击败时才生成普通敌人
-        if (isBossWave || waitingForBossSpawn || bossDefeatedInCurrentWave) return;
-
-        timeCount += Time.deltaTime;
-
-        float currentSpawnInterval = CalculateEnemySpawnInterval();
-
-        if (timeCount >= currentSpawnInterval && waveProgress < 1f)
-        {
-            // 根据EXP决定单次生成数量
-            int spawnCount = CalculateSpawnCount();
-            bool enemySpawned = false;
-
-            for (int i = 0; i < spawnCount; i++)
-            {
-                if (GetOrCreatEnemy(false) != null)
-                {
-                    enemySpawned = true;
-
-                    // 更新波次进度（每个敌人都增加进度）
-                    waveProgress += waveProgressPerEnemy;
-
-                    // 如果进度已满，停止生成更多敌人
-                    if (waveProgress >= 1f)
-                    {
-                        break;
-                    }
-                }
-            }
-
-            if (enemySpawned)
-            {
-                timeCount = 0;
-            }
-
-            // 波次完成，准备BOSS战
-            if (waveProgress >= 1f)
-            {
-                StartBossWave();
-            }
-        }
-
-        // 如果长时间没有生成敌人，强制重置状态
-        if (timeCount > 10f && waveProgress < 1f)
-        {
-            Debug.LogWarning("长时间没有生成敌人，强制重置状态");
-            timeCount = 0;
-            GetOrCreatEnemy(false);
-        }
-    }
-
-    /// <summary>
-    /// 更新BOSS生成 - 修复状态管理
-    /// </summary>
-    private void UpdateBossSpawning()
-    {
-        if (!isBossWave) return;
-
-        timeBossCount += Time.deltaTime;
-
-        if (timeBossCount >= 2f)
-        {
-            if (GetOrCreatEnemy(true) != null)
-            {
-                timeBossCount = 0;
-                isBossWave = false;
-                waitingForBossSpawn = true;
-                Debug.Log($"BOSS已生成，等待被击败. Wave {currentWave}");
-            }
-            else
-            {
-                Debug.LogError("BOSS生成失败！");
-                // BOSS生成失败，强制进入下一波
-                ForceNextWave();
-            }
-        }
-    }
-
-    /// <summary>
-    /// 开始BOSS波次 - 重置BOSS击败状态
-    /// </summary>
-    private void StartBossWave()
-    {
-        isBossWave = true;
-        bossDefeatedInCurrentWave = false; // 重置BOSS击败状态
-        timeBossCount = 0;
-        Debug.Log($"BOSS Wave Started! Wave {currentWave}");
-    }
-
-    /// <summary>
-    /// 计算单次生成敌人数（基于EXP）
-    /// </summary>
-    private int CalculateSpawnCount()
-    {
-        int baseCount = 1;
-
-        // 玩家等级超过5级时，根据EXP增加生成数量
-        if (playerController.level > 5)
-        {
-            int extraEnemies = CalculateExtraEnemiesFromExp();
-            baseCount += extraEnemies;
-        }
-
-        // 限制最大生成数量，避免一次性生成太多
-        return Mathf.Min(baseCount, 3);
-    }
-
-    /// <summary>
-    /// 根据EXP计算额外敌人数
-    /// </summary>
-    private int CalculateExtraEnemiesFromExp()
-    {
-        if (exp <= 0) return 0;
-
-        int extraEnemies = Mathf.FloorToInt(exp / expThreshold);
-        return Mathf.Min(extraEnemies, maxExtraEnemiesFromExp);
-    }
-
-    /// <summary>
-    /// 根据EXP计算生成速度提升
-    /// </summary>
-    private float CalculateSpawnSpeedBoost()
-    {
-        if (playerController.level <= 5) return 0f;
-
-        float boost = (exp / expThreshold) * expSpawnSpeedBoost;
-        return Mathf.Min(boost, 2f);
-    }
-
-    /// <summary>
-    /// 计算敌人生成间隔 - 基于EXP提升速度
-    /// </summary>
-    private float CalculateEnemySpawnInterval()
-    {
-        int playerLevel = playerController.level;
-
-        float baseInterval = baseEnemySpawnInterval;
-
-        // 玩家等级超过5级时，根据EXP减少生成间隔
-        if (playerLevel > 5)
-        {
-            float speedBoost = CalculateSpawnSpeedBoost();
-            baseInterval -= speedBoost;
-        }
-
-        // 波次减少（轻度影响）
-        float waveReduction = (currentWave - 1) * 0.05f;
-        baseInterval -= waveReduction;
-
-        // 确保不会低于最小值
-        return Mathf.Max(minEnemySpawnInterval, baseInterval);
-    }
-
     private GameObject GetOrCreatEnemy(bool boss)
     {
         if (playerController == null)
@@ -469,7 +301,185 @@ public class EnemyManager : SingletonMono<EnemyManager>
         return enemyDic.Count > 0 ? enemyDic[0] : null;
     }
 
-  
+    /// <summary>
+    /// 将敌人回收到对象池
+    /// </summary>
+    private void ReturnEnemyToPool(GameObject enemy)
+    {
+        if (enemy == null) return;
+
+        Enemy enemyComponent = enemy.GetComponent<Enemy>();
+        if (enemyComponent != null)
+        {
+            enemyComponent.Dead();
+        }
+
+        enemy.SetActive(false);
+        enemy.transform.SetParent(transform);
+
+        if (enemyPool != null && !enemyPool.Contains(enemy))
+        {
+            enemyPool.Enqueue(enemy);
+        }
+    }
+
+    /// <summary>
+    /// 回收所有活跃的敌人对象到对象池
+    /// </summary>
+    private void ReturnAllActiveEnemiesToPool()
+    {
+        foreach (Transform child in transform)
+        {
+            if (child.gameObject.activeInHierarchy)
+            {
+                Enemy enemyComponent = child.GetComponent<Enemy>();
+                if (enemyComponent != null)
+                {
+                    ReturnEnemyToPool(child.gameObject);
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// 重新初始化敌人对象池
+    /// </summary>
+    private void ReinitializeEnemyPool()
+    {
+        if (enemyPool != null)
+        {
+            enemyPool.Clear();
+        }
+        else
+        {
+            enemyPool = new Queue<GameObject>();
+        }
+
+        foreach (Transform child in transform)
+        {
+            Destroy(child.gameObject);
+        }
+
+        for (int i = 0; i < 15; i++)
+        {
+            GameObject newEnemy = Instantiate(defualtEnemy, transform);
+            newEnemy.SetActive(false);
+            enemyPool.Enqueue(newEnemy);
+        }
+    }
+
+    // ========== 波次系统相关方法 ==========
+
+    /// <summary>
+    /// 更新波次系统
+    /// </summary>
+    private void UpdateWaveSystem()
+    {
+        // 每60帧输出一次调试信息
+        if (Time.frameCount % 60 < 0.1)
+        {
+            int extraEnemies = CalculateExtraEnemiesFromExp();
+            float speedBoost = CalculateSpawnSpeedBoost();
+
+            Debug.Log($"Wave: {currentWave}, Progress: {waveProgress:F2}, " +
+                      $"IsBossWave: {isBossWave}, WaitingForBoss: {waitingForBossSpawn}, " +
+                      $"BossDefeated: {bossDefeatedInCurrentWave}, EXP: {exp}");
+        }
+    }
+
+    /// <summary>
+    /// 更新普通敌人生成 - 修复BOSS击败后的状态
+    /// </summary>
+    private void UpdateEnemySpawning()
+    {
+        // 只有当不在BOSS波次、不等待BOSS生成、且当前波次BOSS未被击败时才生成普通敌人
+        if (isBossWave || waitingForBossSpawn || bossDefeatedInCurrentWave) return;
+
+        timeCount += Time.deltaTime;
+
+        float currentSpawnInterval = CalculateEnemySpawnInterval();
+
+        if (timeCount >= currentSpawnInterval && waveProgress < 1f)
+        {
+            // 根据EXP决定单次生成数量
+            int spawnCount = CalculateSpawnCount();
+            bool enemySpawned = false;
+
+            for (int i = 0; i < spawnCount; i++)
+            {
+                if (GetOrCreatEnemy(false) != null)
+                {
+                    enemySpawned = true;
+
+                    // 更新波次进度（每个敌人都增加进度）
+                    waveProgress += waveProgressPerEnemy;
+
+                    // 如果进度已满，停止生成更多敌人
+                    if (waveProgress >= 1f)
+                    {
+                        break;
+                    }
+                }
+            }
+
+            if (enemySpawned)
+            {
+                timeCount = 0;
+            }
+
+            // 波次完成，准备BOSS战
+            if (waveProgress >= 1f)
+            {
+                StartBossWave();
+            }
+        }
+
+        // 如果长时间没有生成敌人，强制重置状态
+        if (timeCount > 10f && waveProgress < 1f)
+        {
+            Debug.LogWarning("长时间没有生成敌人，强制重置状态");
+            timeCount = 0;
+            GetOrCreatEnemy(false);
+        }
+    }
+
+    /// <summary>
+    /// 更新BOSS生成 - 修复状态管理
+    /// </summary>
+    private void UpdateBossSpawning()
+    {
+        if (!isBossWave) return;
+
+        timeBossCount += Time.deltaTime;
+
+        if (timeBossCount >= 2f)
+        {
+            if (GetOrCreatEnemy(true) != null)
+            {
+                timeBossCount = 0;
+                isBossWave = false;
+                waitingForBossSpawn = true;
+                Debug.Log($"BOSS已生成，等待被击败. Wave {currentWave}");
+            }
+            else
+            {
+                Debug.LogError("BOSS生成失败！");
+                // BOSS生成失败，强制进入下一波
+                ForceNextWave();
+            }
+        }
+    }
+
+    /// <summary>
+    /// 开始BOSS波次 - 重置BOSS击败状态
+    /// </summary>
+    private void StartBossWave()
+    {
+        isBossWave = true;
+        bossDefeatedInCurrentWave = false; // 重置BOSS击败状态
+        timeBossCount = 0;
+        Debug.Log($"BOSS Wave Started! Wave {currentWave}");
+    }
 
     /// <summary>
     /// 强制进入下一波 - 修复状态重置
@@ -523,127 +533,74 @@ public class EnemyManager : SingletonMono<EnemyManager>
         Debug.Log("敌人管理器已初始化，波次系统重置");
     }
 
+    // ========== 工具方法 ==========
+
     /// <summary>
-    /// 回收所有活跃的敌人对象到对象池
+    /// 计算单次生成敌人数（基于EXP）
     /// </summary>
-    private void ReturnAllActiveEnemiesToPool()
+    private int CalculateSpawnCount()
     {
-        foreach (Transform child in transform)
+        int baseCount = 1;
+
+        // 玩家等级超过5级时，根据EXP增加生成数量
+        if (playerController.level > 5)
         {
-            if (child.gameObject.activeInHierarchy)
-            {
-                Enemy enemyComponent = child.GetComponent<Enemy>();
-                if (enemyComponent != null)
-                {
-                    ReturnEnemyToPool(child.gameObject);
-                }
-            }
+            int extraEnemies = CalculateExtraEnemiesFromExp();
+            baseCount += extraEnemies;
         }
+
+        // 限制最大生成数量，避免一次性生成太多
+        return Mathf.Min(baseCount, 3);
     }
 
     /// <summary>
-    /// 将敌人回收到对象池
+    /// 根据EXP计算额外敌人数
     /// </summary>
-    private void ReturnEnemyToPool(GameObject enemy)
+    private int CalculateExtraEnemiesFromExp()
     {
-        if (enemy == null) return;
+        if (exp <= 0) return 0;
 
-        Enemy enemyComponent = enemy.GetComponent<Enemy>();
-        if (enemyComponent != null)
-        {
-            enemyComponent.Dead();
-        }
-
-        enemy.SetActive(false);
-        enemy.transform.SetParent(transform);
-
-        if (enemyPool != null && !enemyPool.Contains(enemy))
-        {
-            enemyPool.Enqueue(enemy);
-        }
+        int extraEnemies = Mathf.FloorToInt(exp / expThreshold);
+        return Mathf.Min(extraEnemies, maxExtraEnemiesFromExp);
     }
 
     /// <summary>
-    /// 重新初始化敌人对象池
+    /// 根据EXP计算生成速度提升
     /// </summary>
-    private void ReinitializeEnemyPool()
+    private float CalculateSpawnSpeedBoost()
     {
-        if (enemyPool != null)
-        {
-            enemyPool.Clear();
-        }
-        else
-        {
-            enemyPool = new Queue<GameObject>();
-        }
+        if (playerController.level <= 5) return 0f;
 
-        foreach (Transform child in transform)
-        {
-            Destroy(child.gameObject);
-        }
-
-        for (int i = 0; i < 15; i++)
-        {
-            GameObject newEnemy = Instantiate(defualtEnemy, transform);
-            newEnemy.SetActive(false);
-            enemyPool.Enqueue(newEnemy);
-        }
-    }
-
-    // 获取当前波次信息（用于UI显示）
-    public int GetCurrentWave() => currentWave;
-    public float GetWaveProgress() => waveProgress;
-    public bool IsBossWave() => isBossWave;
-
-    // 公开方法用于外部配置敌人分组
-    public void SetNormalEnemyIDs(List<int> ids) => normalEnemyIDs = ids;
-    public void SetEliteEnemyIDs(List<int> ids) => eliteEnemyIDs = ids;
-    public void SetBossEnemyIDs(List<int> ids) => bossEnemyIDs = ids;
-
-    /// <summary>
-    /// 判断敌人ID是否为BOSS
-    /// </summary>
-    public bool IsBossEnemy(int enemyID)
-    {
-        return bossEnemyIDs.Contains(enemyID);
+        float boost = (exp / expThreshold) * expSpawnSpeedBoost;
+        return Mathf.Min(boost, 2f);
     }
 
     /// <summary>
-    /// 调试信息
+    /// 计算敌人生成间隔 - 基于EXP提升速度
     /// </summary>
-    public void DebugEnemyWeights()
+    private float CalculateEnemySpawnInterval()
     {
-        if (playerController == null) return;
+        int playerLevel = playerController.level;
 
-        int level = playerController.level;
+        float baseInterval = baseEnemySpawnInterval;
 
-        Debug.Log($"当前波次: {currentWave}, 玩家等级: {level}, EXP: {exp}");
-
-        int extraEnemies = CalculateExtraEnemiesFromExp();
-        float speedBoost = CalculateSpawnSpeedBoost();
-        float spawnInterval = CalculateEnemySpawnInterval();
-
-        Debug.Log($"EXP额外敌人数: {extraEnemies}, 速度提升: {speedBoost:F2}, 生成间隔: {spawnInterval:F2}秒");
-
-        if (currentWave > 1)
+        // 玩家等级超过5级时，根据EXP减少生成间隔
+        if (playerLevel > 5)
         {
-            float normalWeight = Mathf.Max(1f, normalEnemyBaseWeight +
-                                               (level * normalEnemyLevelFactor) +
-                                               (currentWave * normalEnemyWaveFactor));
-
-            float eliteWeight = Mathf.Max(1f, eliteEnemyBaseWeight +
-                                              (level * eliteEnemyLevelFactor) +
-                                              (currentWave * eliteEnemyWaveFactor));
-
-            Debug.Log($"普通敌人权重: {normalWeight}, 精英敌人权重: {eliteWeight}");
+            float speedBoost = CalculateSpawnSpeedBoost();
+            baseInterval -= speedBoost;
         }
-        else
-        {
-            Debug.Log("第一波: 只生成普通敌人");
-        }
+
+        // 波次减少（轻度影响）
+        float waveReduction = (currentWave - 1) * 0.05f;
+        baseInterval -= waveReduction;
+
+        // 确保不会低于最小值
+        return Mathf.Max(minEnemySpawnInterval, baseInterval);
     }
 
-    
+    // ========== 事件处理 ==========
+
     /// <summary>
     /// 敌人被击败时调用 - 强化BOSS击败处理
     /// </summary>
@@ -720,8 +677,6 @@ public class EnemyManager : SingletonMono<EnemyManager>
         }
     }
 
-   
-
     /// <summary>
     /// 增强的紧急恢复方法
     /// </summary>
@@ -745,5 +700,60 @@ public class EnemyManager : SingletonMono<EnemyManager>
         StartCoroutine(StartNextWaveCoroutine());
 
         Debug.Log("紧急恢复完成");
+    }
+
+    // ========== 公开方法和调试方法 ==========
+
+    // 获取当前波次信息（用于UI显示）
+    public int GetCurrentWave() => currentWave;
+    public float GetWaveProgress() => waveProgress;
+    public bool IsBossWave() => isBossWave;
+
+    // 公开方法用于外部配置敌人分组
+    public void SetNormalEnemyIDs(List<int> ids) => normalEnemyIDs = ids;
+    public void SetEliteEnemyIDs(List<int> ids) => eliteEnemyIDs = ids;
+    public void SetBossEnemyIDs(List<int> ids) => bossEnemyIDs = ids;
+
+    /// <summary>
+    /// 判断敌人ID是否为BOSS
+    /// </summary>
+    public bool IsBossEnemy(int enemyID)
+    {
+        return bossEnemyIDs.Contains(enemyID);
+    }
+
+    /// <summary>
+    /// 调试信息
+    /// </summary>
+    public void DebugEnemyWeights()
+    {
+        if (playerController == null) return;
+
+        int level = playerController.level;
+
+        Debug.Log($"当前波次: {currentWave}, 玩家等级: {level}, EXP: {exp}");
+
+        int extraEnemies = CalculateExtraEnemiesFromExp();
+        float speedBoost = CalculateSpawnSpeedBoost();
+        float spawnInterval = CalculateEnemySpawnInterval();
+
+        Debug.Log($"EXP额外敌人数: {extraEnemies}, 速度提升: {speedBoost:F2}, 生成间隔: {spawnInterval:F2}秒");
+
+        if (currentWave > 1)
+        {
+            float normalWeight = Mathf.Max(1f, normalEnemyBaseWeight +
+                                               (level * normalEnemyLevelFactor) +
+                                               (currentWave * normalEnemyWaveFactor));
+
+            float eliteWeight = Mathf.Max(1f, eliteEnemyBaseWeight +
+                                              (level * eliteEnemyLevelFactor) +
+                                              (currentWave * eliteEnemyWaveFactor));
+
+            Debug.Log($"普通敌人权重: {normalWeight}, 精英敌人权重: {eliteWeight}");
+        }
+        else
+        {
+            Debug.Log("第一波: 只生成普通敌人");
+        }
     }
 }

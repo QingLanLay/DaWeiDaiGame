@@ -17,5 +17,5 @@ MonoBehaviour:
   speed: 3
   attack: 100
   health: 800
-  exp: 100000
+  exp: 10000
   icon: {fileID: 21300000, guid: 93d997e479968f6419e000c04d5a0e0e, type: 3}
