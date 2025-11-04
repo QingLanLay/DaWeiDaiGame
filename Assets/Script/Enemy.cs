@@ -6,15 +6,27 @@ using Random = UnityEngine.Random;
 public class Enemy : MonoBehaviour
 {
     [Header("基础属性")]
-    [SerializeField] private int ID;
-    [SerializeField] private float health;
-    [SerializeField] private float attack;
-    [SerializeField] private float speed;
-    [SerializeField] private int exp;
-    [SerializeField] private Sprite icon;
+    [SerializeField]
+    private int ID;
+
+    [SerializeField]
+    private float health;
+
+    [SerializeField]
+    private float attack;
+
+    [SerializeField]
+    private float speed;
+
+    [SerializeField]
+    private int exp;
+
+    [SerializeField]
+    private Sprite icon;
 
     [Header("移动设置")]
     public float horizontalSpeed = 3f;
+
     public float directionChangeInterval = 1f;
     public float normalSpeed = 2f;
     public float rushSpeed = 8f;
@@ -34,7 +46,7 @@ public class Enemy : MonoBehaviour
     private bool isDead = false;
     private float timer = 0f;
     private int horizontalDirection = 0;
-    private int level;
+    private int wave;
     private bool isRushing = false;
     private float nextBehaviorChangeTime = 0f;
 
@@ -61,7 +73,7 @@ public class Enemy : MonoBehaviour
             rb.velocity = Vector2.zero;
             rb.angularVelocity = 0f;
         }
-        
+
         // 初始随机方向
         ChangeDirection();
     }
@@ -70,7 +82,7 @@ public class Enemy : MonoBehaviour
     {
         StopAllCoroutines();
     }
-    
+
     /// <summary>
     /// 获取敌人数据并初始化
     /// </summary>
@@ -79,8 +91,8 @@ public class Enemy : MonoBehaviour
         // 获取玩家等级
         if (player == null)
             player = GameObject.FindGameObjectWithTag("Player");
-            
-        level = player.GetComponent<PlayerController>().level;
+
+        wave = EnemyManager.Instance.GetCurrentWave();
 
         // 设置基础属性
         ID = enemyData.ID;
@@ -91,8 +103,8 @@ public class Enemy : MonoBehaviour
         exp = enemyData.Exp;
 
         // 应用等级缩放
-        ApplyLevelScaling(level);
-        
+        ApplyLevelScaling(wave);
+
         // 设置外观
         spriteRenderer.sprite = icon;
         spriteRenderer.size = new Vector2(1, 1);
@@ -102,7 +114,7 @@ public class Enemy : MonoBehaviour
         timer = 0f;
         isRushing = false;
         nextBehaviorChangeTime = 0f;
-        
+
         // 根据敌人类型设置行为参数
         SetBehaviorByType();
     }
@@ -132,23 +144,23 @@ public class Enemy : MonoBehaviour
     /// <summary>
     /// 应用等级缩放
     /// </summary>
-    public void ApplyLevelScaling(int level)
+    public void ApplyLevelScaling(int wave)
     {
-        if (level <= 1) return;
-        
-        float levelBonus = level - 1;
-        
-        // 应用缩放（带限制）
-        float healthMultiplier = Mathf.Min(1 + levelBonus * scaling.healthScale, scaling.maxHealthMultiplier);
-        float attackMultiplier = Mathf.Min(1 + levelBonus * scaling.attackScale, scaling.maxAttackMultiplier);
-        float speedMultiplier = Mathf.Min(1 + levelBonus * scaling.speedScale, scaling.maxSpeedMultiplier);
-        float expMultiplier = Mathf.Min(1 + levelBonus * scaling.expScale, scaling.maxExpMultiplier);
-        
+        if (wave <= 1) return;
+
+        float levelBonus = wave - 1;
+
+        // 应用缩放
+        float healthMultiplier = 1 + levelBonus * scaling.healthScale;
+        float attackMultiplier = 1 + levelBonus * scaling.attackScale;
+        float speedMultiplier = 1 + levelBonus * scaling.speedScale;
+        float expMultiplier = 1 + levelBonus * scaling.expScale;
+
         health = health * healthMultiplier;
         attack = attack * attackMultiplier;
         speed = speed * speedMultiplier;
         exp = Mathf.RoundToInt(exp * expMultiplier);
-        
+
         // 经验值上限
         if (exp > 50000)
         {
@@ -174,7 +186,7 @@ public class Enemy : MonoBehaviour
     private void FixedUpdate()
     {
         if (isDead) return;
-        
+
         Move();
         CheckScreenBounds();
     }
@@ -185,7 +197,7 @@ public class Enemy : MonoBehaviour
     private void CheckScreenBounds()
     {
         Vector3 screenPos = Camera.main.WorldToViewportPoint(transform.position);
-        
+
         if (screenPos.x < 0.05f)
         {
             horizontalDirection = 1; // 左边界向右
@@ -239,7 +251,7 @@ public class Enemy : MonoBehaviour
                 // 结束冲刺，进入徘徊
                 horizontalSpeed = normalSpeed;
                 nextBehaviorChangeTime = Time.time + Random.Range(1f, 3f);
-                
+
                 // 随机旋转
                 float randomRotation = Random.Range(-180f, 180f);
                 StartCoroutine(SmoothRotate(randomRotation, nextBehaviorChangeTime - Time.time));
@@ -304,13 +316,13 @@ public class Enemy : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (isDead) return;
-            
+
         if (other.CompareTag("Bullet"))
         {
             // 受到子弹伤害
             health -= other.GetComponent<Bullet>().Attack;
             other.GetComponent<Bullet>().ReturnToPool();
-            
+
             if (animator != null)
             {
                 animator.SetTrigger("BeAttack");
@@ -320,6 +332,11 @@ public class Enemy : MonoBehaviour
             if (health <= 0)
             {
                 Die();
+                if (other.CompareTag("Bullet"))
+                {
+                    // 给予经验值
+                    GiveExperience();
+                }
             }
         }
     }
@@ -332,9 +349,7 @@ public class Enemy : MonoBehaviour
         if (isDead) return;
         isDead = true;
 
-        // 给予经验值
-        GiveExperience();
-
+        
         // 回收敌人
         ReturnToPool();
     }
@@ -353,7 +368,7 @@ public class Enemy : MonoBehaviour
                 Debug.LogError($"异常经验值: {safeExp}，已限制为10000");
                 safeExp = 10000;
             }
-            
+
             davidDie.UpLevel(safeExp);
         }
     }
@@ -369,7 +384,7 @@ public class Enemy : MonoBehaviour
             rb.velocity = Vector2.zero;
             rb.angularVelocity = 0f;
         }
-        
+
         StopAllCoroutines();
 
         // 禁用对象
@@ -398,14 +413,11 @@ public class Enemy : MonoBehaviour
 public class EnemyScaling
 {
     [Header("等级缩放系数")]
-    public float healthScale = 0.3f;
-    public float attackScale = 0.25f;
+    public float healthScale = 3f;
+
+    public float attackScale = 2f;
     public float speedScale = 0.1f;
-    public float expScale = 0.4f;
-    
-    [Header("最大增长限制")]
-    public float maxHealthMultiplier = 3f;
-    public float maxAttackMultiplier = 2.5f;
-    public float maxSpeedMultiplier = 1f;
-    public float maxExpMultiplier = 5f;
+    public float expScale = 4f;
+
+
 }

@@ -116,10 +116,7 @@ public class PlayerController : MonoBehaviour
             Dead();
         }
 
-        if (attackSpeed > 10)
-        {
-            attackSpeed = 10;
-        }
+
     }
 
 

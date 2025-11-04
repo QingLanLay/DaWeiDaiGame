@@ -105,22 +105,18 @@ MonoBehaviour:
   attack: 1
   speed: 1
   exp: 0
-  player: {fileID: 0}
+  icon: {fileID: 0}
   horizontalSpeed: 3
   directionChangeInterval: 1
-  scaling:
-    healthScale: 0.3
-    attackScale: 0.25
-    speedScale: 0.1
-    expScale: 0.4
-    maxHealthMultiplier: 3
-    maxAttackMultiplier: 2.5
-    maxSpeedMultiplier: 1.5
-    maxExpMultiplier: 5
   normalSpeed: 2
   rushSpeed: 8
   minInterval: 0.5
   maxInterval: 2
+  scaling:
+    healthScale: 1
+    attackScale: 1
+    speedScale: 0.01
+    expScale: 1
 --- !u!50 &-4976824829515960851
 Rigidbody2D:
   serializedVersion: 4

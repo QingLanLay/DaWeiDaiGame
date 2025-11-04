@@ -292,7 +292,7 @@ public class EnemyManager : SingletonMono<EnemyManager>
         float interval = baseEnemySpawnInterval;
         
         // 随波次增加而加快
-        interval -= (currentWave - 1) * 0.2f;
+        interval -= (currentWave - 1) * 0.5f;
         
         // 确保不会太快
         return Mathf.Max(0.8f, interval);
