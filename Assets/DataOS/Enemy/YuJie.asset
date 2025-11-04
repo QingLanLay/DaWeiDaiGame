@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 2
   enemyName: "\u96E8\u59D0"
-  speed: 3
+  speed: 1.5
   attack: 100
   health: 800
   exp: 10000

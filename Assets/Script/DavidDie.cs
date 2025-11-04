@@ -185,12 +185,22 @@ public class DavidDie : MonoBehaviour
     public void UpLevel(int exp)
     {
         currentExp += exp;
-        if (currentExp >= level*level*level*100)
+        switch (currentExp)
         {
-            if (level < 5)
-            {
-                level++;
-            }
+            case >= 100000 :
+                level = 5;
+                break;
+            case >= 50000:
+                level = 4;
+                break;
+            case >= 5000:
+                level = 3;
+                break;
+            case >= 1000:
+                level = 2;
+                break;
+            default:
+                break;
         }
     }
     

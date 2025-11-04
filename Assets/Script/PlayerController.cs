@@ -92,6 +92,21 @@ public class PlayerController : MonoBehaviour
         {
             {
                 PerformAttack();
+                
+                // 动态减少移速，攻速，攻击力
+                currentSpeed -= 0.01f;
+                attackSpeed -= 0.02f * level;
+                attack -= 0.1f * level;
+
+                if (attackSpeed < 0.8f)
+                {
+                    attackSpeed = 0.8f;
+                }
+                
+                if (attack < 1)
+                {
+                    attack = 1;
+                }
                 timeBullet = 0;
             }
         } // 子弹计时器
@@ -100,7 +115,11 @@ public class PlayerController : MonoBehaviour
         {
             Dead();
         }
-        
+
+        if (attackSpeed > 10)
+        {
+            attackSpeed = 10;
+        }
     }
 
 

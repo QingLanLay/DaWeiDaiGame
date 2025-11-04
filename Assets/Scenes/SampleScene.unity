@@ -4515,8 +4515,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 575d88b087721744c8941a0bc84f93bd, type: 2}
   foodTypeWeights: []
   baseSpawnInterval: 2
-  minSpawnInterval: 0.5
-  maxFoodPerSpawn: 3
+  minSpawnInterval: 0.4
+  maxFoodPerSpawn: 5
   spawnAreaWidth: 5
   minDistanceBetweenFood: 1
 --- !u!4 &1785267650
@@ -4942,28 +4942,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba5d3a7615d6a684abe32207814cbf51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defualtEnemy: {fileID: 5051139820577726549, guid: 079c2cb5a0585634eb993c597210e5ee, type: 3}
+  defaultEnemy: {fileID: 5051139820577726549, guid: 079c2cb5a0585634eb993c597210e5ee, type: 3}
   enemyList:
   - {fileID: 11400000, guid: 3aef619b207ccd146b29553453900b4f, type: 2}
   - {fileID: 11400000, guid: 7e803a111940c9b4ca7e3f2808e5f932, type: 2}
   - {fileID: 11400000, guid: 926295887850edb48ade6f69efa767c9, type: 2}
-  davidDie: {fileID: 221356897}
   baseEnemySpawnInterval: 5
-  minEnemySpawnInterval: 1
   enemiesPerWave: 8
-  waveProgressPerEnemy: 0.125
-  expThreshold: 10000
-  maxExtraEnemiesFromExp: 10
-  expSpawnSpeedBoost: 0.1
   normalEnemyIDs: 00000000
   eliteEnemyIDs: 01000000
   bossEnemyIDs: 02000000
-  normalEnemyBaseWeight: 60
-  normalEnemyLevelFactor: -5
-  normalEnemyWaveFactor: -3
-  eliteEnemyBaseWeight: 30
-  eliteEnemyLevelFactor: 2
-  eliteEnemyWaveFactor: 2
 --- !u!4 &1990768703
 Transform:
   m_ObjectHideFlags: 0

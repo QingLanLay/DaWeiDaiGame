@@ -75,7 +75,7 @@ public class FallingObjManager : SingletonMono<FallingObjManager>
 
         // 动态计算刷新间隔（随等级提高刷新加快）
         float currentSpawnInterval = Mathf.Max(minSpawnInterval, 
-            baseSpawnInterval - (playerController.level * 0.1f));
+            baseSpawnInterval - (playerController.level * 0.4f));
             
         if (timeCount >= currentSpawnInterval)
         {
@@ -331,7 +331,7 @@ public class FallingObjManager : SingletonMono<FallingObjManager>
         weights[FoodType.smail] = Mathf.Max(0, 40 - (playerLevel * 2));    // 小食物随等级减少
         weights[FoodType.normal] = 30;                                      // 普通食物保持不变
         weights[FoodType.big] = Mathf.Max(0, 5 + (playerLevel * 1));       // 大食物随等级增加
-        weights[FoodType.bad] = Mathf.Max(0, 25 - (playerLevel * 1));      // 坏食物随等级减少
+        weights[FoodType.bad] = Mathf.Max(0, 25 + (playerLevel * 1));      // 坏食物随等级减少
     }
 
     /// <summary>
