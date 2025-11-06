@@ -2412,6 +2412,8 @@ GameObject:
   - component: {fileID: 680637389}
   - component: {fileID: 680637388}
   - component: {fileID: 680637387}
+  - component: {fileID: 680637392}
+  - component: {fileID: 680637391}
   m_Layer: 0
   m_Name: 9-Sliced
   m_TagString: Untagged
@@ -2558,6 +2560,96 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &680637391
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 680637386}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 2.85, y: 7.45}
+  m_SpriteTilingProperty:
+    border: {x: 0.25, y: 0.25, z: 0.25, w: 0.25}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 13.694408, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 2
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 12.800658}
+  m_EdgeRadius: 0
+--- !u!61 &680637392
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 680637386}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -3.99, y: 7.45}
+  m_SpriteTilingProperty:
+    border: {x: 0.25, y: 0.25, z: 0.25, w: 0.25}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 13.694408, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 2
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 12.800658}
+  m_EdgeRadius: 0
 --- !u!1 &776797688
 GameObject:
   m_ObjectHideFlags: 0
@@ -4511,8 +4603,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   food: {fileID: 7883826809895418569, guid: 8f4e0ff838d5f264098396fe5c68954a, type: 3}
   foodList:
+  - {fileID: 11400000, guid: db851e14bcc5ee945957c8376c38e29b, type: 2}
   - {fileID: 11400000, guid: 5567a8647eb50dc45ad1f2a0a64b5505, type: 2}
+  - {fileID: 11400000, guid: 842dc71ba6bbc0948817cff0c31a09ff, type: 2}
+  - {fileID: 11400000, guid: 71a1637864e17934081ece94bf515c2e, type: 2}
+  - {fileID: 11400000, guid: 319ca130a28751644bf4f075dac9195c, type: 2}
+  - {fileID: 11400000, guid: 19fe94cd7cc8bc341bf80faa5f822b68, type: 2}
+  - {fileID: 11400000, guid: 2aba08bb573727242951d1ddc782b0fd, type: 2}
+  - {fileID: 11400000, guid: 7fbe9eb7fce1c164896c616a026af41a, type: 2}
+  - {fileID: 11400000, guid: 3d0e3414b0af07e4e986f1d1d973c28b, type: 2}
   - {fileID: 11400000, guid: 575d88b087721744c8941a0bc84f93bd, type: 2}
+  - {fileID: 11400000, guid: a56ff1a4ef597c3419d295693798c178, type: 2}
+  - {fileID: 11400000, guid: 59ca3044706592048a050a54bde57763, type: 2}
+  - {fileID: 11400000, guid: bdb6c2c1185ee1b4fb48b7decf19d7fc, type: 2}
+  - {fileID: 11400000, guid: 56f5ddb8192d6f54f8956a8df05e76ad, type: 2}
   foodTypeWeights: []
   baseSpawnInterval: 2
   minSpawnInterval: 0.4

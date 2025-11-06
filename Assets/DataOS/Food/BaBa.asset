@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6701f6c449416d140a6d9c4fc1791e59, type: 3}
-  m_Name: MenZi
+  m_Name: BaBa
   m_EditorClassIdentifier: 
-  id: 2
+  id: 14
   type: 2
-  foodName: 2
-  addSpeed: 0.3
-  addHeath: 5
-  addAttack: 1
-  addAttackSpeed: 0.3
+  foodName: 14
+  addSpeed: -0.5
+  addHeath: -15
+  addAttack: -3
+  addAttackSpeed: -0.5
   damage: 0
-  gravityScale: 0.4
-  icon: {fileID: 21300000, guid: 084a98c3c3c373347b3b7fdaeda68d3f, type: 3}
-  displayScale: 0.2
+  gravityScale: 0.2
+  icon: {fileID: 21300000, guid: a8f17d8ff3f9bcf4b9c8c2a0b33cd3b9, type: 3}
+  displayScale: 0.1
   maintainAspectRatio: 1

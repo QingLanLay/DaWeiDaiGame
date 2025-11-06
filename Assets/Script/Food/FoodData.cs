@@ -10,7 +10,6 @@ public class FoodData : ScriptableObject
     private int id;
     [SerializeField]
     private FoodType type;
-
     [SerializeField]
     private FoodName foodName;
 
@@ -35,9 +34,13 @@ public class FoodData : ScriptableObject
     [SerializeField]
     private float gravityScale;
     
-    [Header("图标")]
+    [Header("显示设置")]
     [SerializeField]
     private Sprite icon;
+    [SerializeField]
+    private float displayScale = 1f; // 新增：显示缩放比例
+    [SerializeField]
+    private bool maintainAspectRatio = true; // 新增：是否保持横纵比
 
 
     // 伤害
@@ -50,14 +53,11 @@ public class FoodData : ScriptableObject
         set => icon = value;
     }
 
-
     public int ID
     {
         get => id;
         set => id = value;
     }
-
-
 
     public FoodName FoodName
     {
@@ -77,7 +77,6 @@ public class FoodData : ScriptableObject
         set => addHeath = value;
     }
 
-
     public float AddAttack
     {
         get => addAttack;
@@ -95,13 +94,39 @@ public class FoodData : ScriptableObject
         get => gravityScale; 
         set => gravityScale = value; 
     }
+
+    // 新增属性
+    public float DisplayScale
+    {
+        get => displayScale;
+        set => displayScale = value;
+    }
+
+    public bool MaintainAspectRatio
+    {
+        get => maintainAspectRatio;
+        set => maintainAspectRatio = value;
+    }
 }
 
 public enum FoodName
 {
     Default = 0,
     FangBianMian = 1,
-    MenZi =2 
+    MenZi =2 ,
+    KeLe = 3,
+    JiaoZi = 4,
+    ManTou = 5,
+    HuoShao = 6,
+    LiangPi= 7,
+    GuoTie = 8,
+    XianBing = 9,
+    YouTiao = 10,
+    MianTiao = 11,
+    XueBi = 12,
+    FeiYuGuanTou =13,
+    BaBa =14,
+    XinBaJi =15
 }
 
 public enum FoodType

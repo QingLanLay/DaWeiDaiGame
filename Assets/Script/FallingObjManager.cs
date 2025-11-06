@@ -8,40 +8,52 @@ public class FallingObjManager : SingletonMono<FallingObjManager>
 {
     // 对象池
     private Queue<GameObject> objectPool;
+
     // 食物预制体
     [SerializeField]
     private GameObject food;
+
     // 计时器
     private float timeCount;
+
     // 食物列表
     [SerializeField]
     private List<FoodData> foodList;
-    
+
     public Dictionary<FoodName, FoodData> foodDictionary;
-    
+
     // 类型权重配置
     [System.Serializable]
     public class FoodTypeWeight
     {
         public FoodType foodType;
-        public float baseWeight;    // 基础权重
-        public float levelFactor;   // 等级影响因子
+        public float baseWeight; // 基础权重
+        public float levelFactor; // 等级影响因子
     }
-    
-    [SerializeField] private List<FoodTypeWeight> foodTypeWeights;
-    
+
+    [SerializeField]
+    private List<FoodTypeWeight> foodTypeWeights;
+
     // 刷新配置
-    [SerializeField] private float baseSpawnInterval = 2f;     // 基础刷新间隔
-    [SerializeField] private float minSpawnInterval = 0.5f;    // 最小刷新间隔
-    [SerializeField] private int maxFoodPerSpawn = 3;          // 单次最大生成数量
-    
+    [SerializeField]
+    private float baseSpawnInterval = 2f; // 基础刷新间隔
+
+    [SerializeField]
+    private float minSpawnInterval = 0.5f; // 最小刷新间隔
+
+    [SerializeField]
+    private int maxFoodPerSpawn = 3; // 单次最大生成数量
+
     // 位置生成配置
-    [SerializeField] private float spawnAreaWidth = 5f;        // 生成区域宽度
-    [SerializeField] private float minDistanceBetweenFood = 1f; // 食物间最小距离
-    
+    [SerializeField]
+    private float spawnAreaWidth = 5f; // 生成区域宽度
+
+    [SerializeField]
+    private float minDistanceBetweenFood = 1f; // 食物间最小距离
+
     private PlayerController playerController;
     private List<Vector3> recentSpawnPositions; // 最近生成位置记录
-    
+
     protected override void Awake()
     {
         base.Awake();
@@ -57,41 +69,42 @@ public class FallingObjManager : SingletonMono<FallingObjManager>
                 foodDictionary.Add(data.FoodName, data);
             }
         }
-        
+
         playerController = FindObjectOfType<PlayerController>();
         if (playerController == null)
         {
             Debug.LogError("PlayerController not found!");
         }
-        
+
         Init();
     }
 
     private void Update()
     {
         if (playerController == null) return;
-        
+
         timeCount += Time.deltaTime;
 
         // 动态计算刷新间隔（随等级提高刷新加快）
-        float currentSpawnInterval = Mathf.Max(minSpawnInterval, 
+        float currentSpawnInterval = Mathf.Max(minSpawnInterval,
             baseSpawnInterval - (playerController.level * 0.4f));
-            
+
         if (timeCount >= currentSpawnInterval)
         {
             // 根据玩家等级决定单次生成数量
             int spawnCount = CalculateSpawnCount();
-            
+
             // 获取均匀分布的位置
             List<Vector3> spawnPositions = GetUniformSpawnPositions(spawnCount);
-            
+
             for (int i = 0; i < spawnCount && i < spawnPositions.Count; i++)
             {
                 SpawnRandomFood(spawnPositions[i]);
             }
+
             timeCount = 0;
         }
-        
+
         // 清理过时的位置记录（每帧清理一次，保持列表不会太大）
         if (recentSpawnPositions.Count > 10)
         {
@@ -105,9 +118,9 @@ public class FallingObjManager : SingletonMono<FallingObjManager>
     private List<Vector3> GetUniformSpawnPositions(int count)
     {
         List<Vector3> positions = new List<Vector3>();
-        
+
         if (count <= 0) return positions;
-        
+
         // 如果只生成一个，使用简单随机位置
         if (count == 1)
         {
@@ -120,24 +133,24 @@ public class FallingObjManager : SingletonMono<FallingObjManager>
             positions.Add(position);
             return positions;
         }
-        
+
         // 多个食物时使用均匀分布
         float segmentWidth = spawnAreaWidth / (count + 1);
-        
+
         for (int i = 0; i < count; i++)
         {
             // 在分段内随机位置，避免完全对齐
             float minX = -spawnAreaWidth / 2 + (i + 0.25f) * segmentWidth;
             float maxX = -spawnAreaWidth / 2 + (i + 0.75f) * segmentWidth;
-            
+
             float randomX = Random.Range(minX, maxX);
-            
+
             Vector3 position = new Vector3(
                 transform.position.x + randomX,
                 transform.position.y,
                 transform.position.z
             );
-            
+
             // 检查是否与最近生成的位置太近
             if (!IsPositionTooCloseToRecentSpawns(position))
             {
@@ -155,10 +168,10 @@ public class FallingObjManager : SingletonMono<FallingObjManager>
                 }
             }
         }
-        
+
         return positions;
     }
-    
+
     /// <summary>
     /// 检查位置是否与最近生成的位置太近
     /// </summary>
@@ -171,9 +184,10 @@ public class FallingObjManager : SingletonMono<FallingObjManager>
                 return true;
             }
         }
+
         return false;
     }
-    
+
     /// <summary>
     /// 寻找替代位置
     /// </summary>
@@ -188,10 +202,10 @@ public class FallingObjManager : SingletonMono<FallingObjManager>
                 transform.position.y,
                 transform.position.z
             );
-            
+
             // 检查是否与现有位置和最近位置都保持距离
             bool validPosition = true;
-            
+
             // 检查与本次生成的其他位置
             foreach (var pos in existingPositions)
             {
@@ -201,19 +215,19 @@ public class FallingObjManager : SingletonMono<FallingObjManager>
                     break;
                 }
             }
-            
+
             // 检查与最近生成的位置
             if (validPosition && IsPositionTooCloseToRecentSpawns(testPosition))
             {
                 validPosition = false;
             }
-            
+
             if (validPosition)
             {
                 return testPosition;
             }
         }
-        
+
         // 如果找不到理想位置，返回一个随机位置
         float fallbackX = Random.Range(-spawnAreaWidth / 2, spawnAreaWidth / 2);
         return new Vector3(
@@ -229,22 +243,21 @@ public class FallingObjManager : SingletonMono<FallingObjManager>
     private int CalculateSpawnCount()
     {
         if (playerController == null) return 1;
-        
+
         int level = playerController.level;
-        
+
         // 基础概率表：等级 -> [最小数量, 最大数量]
         var spawnTable = new Dictionary<int, Vector2Int>
         {
-            {1, new Vector2Int(1, 1)},
-            {2, new Vector2Int(1, 2)},
-            {3, new Vector2Int(1, 2)},
-            {4, new Vector2Int(1, 3)},
-            {5, new Vector2Int(2, 3)}
+            { 1, new Vector2Int(1, 1) },
+            { 2, new Vector2Int(1, 2) },
+            { 3, new Vector2Int(1, 2) },
+            { 4, new Vector2Int(1, 3) },
+            { 5, new Vector2Int(2, 3) }
         };
-        
-        Vector2Int range = spawnTable.ContainsKey(level) ? 
-            spawnTable[level] : new Vector2Int(1, maxFoodPerSpawn);
-            
+
+        Vector2Int range = spawnTable.ContainsKey(level) ? spawnTable[level] : new Vector2Int(1, maxFoodPerSpawn);
+
         return Random.Range(range.x, range.y + 1);
     }
 
@@ -265,21 +278,21 @@ public class FallingObjManager : SingletonMono<FallingObjManager>
     /// </summary>
     private FoodData GetRandomFoodByType()
     {
-        if (playerController == null || foodList.Count == 0) 
+        if (playerController == null || foodList.Count == 0)
             return foodList.Count > 0 ? foodList[0] : null;
-        
+
         int playerLevel = playerController.level;
-        
+
         // 计算各类型的动态权重
         Dictionary<FoodType, float> currentWeights = new Dictionary<FoodType, float>();
         float totalWeight = 0f;
-        
+
         // 初始化所有权重
         foreach (FoodType type in Enum.GetValues(typeof(FoodType)))
         {
             currentWeights[type] = 0f;
         }
-        
+
         // 设置配置的权重
         foreach (var weightConfig in foodTypeWeights)
         {
@@ -288,19 +301,19 @@ public class FallingObjManager : SingletonMono<FallingObjManager>
             currentWeights[weightConfig.foodType] = Mathf.Max(0, dynamicWeight);
             totalWeight += dynamicWeight;
         }
-        
+
         // 如果没有配置权重，使用默认权重
         if (totalWeight <= 0)
         {
             SetDefaultWeights(currentWeights, playerLevel);
             totalWeight = CalculateTotalWeight(currentWeights);
         }
-        
+
         // 随机选择类型
         float randomValue = Random.Range(0f, totalWeight);
         float current = 0f;
         FoodType selectedType = FoodType.smail;
-        
+
         foreach (var kvp in currentWeights)
         {
             current += kvp.Value;
@@ -310,14 +323,14 @@ public class FallingObjManager : SingletonMono<FallingObjManager>
                 break;
             }
         }
-        
+
         // 从该类型的食物中随机选择一个
         var typeFoods = foodList.FindAll(food => food.Type == selectedType);
         if (typeFoods.Count > 0)
         {
             return typeFoods[Random.Range(0, typeFoods.Count)];
         }
-        
+
         // 如果没有该类型食物，返回第一个食物
         return foodList[0];
     }
@@ -328,10 +341,10 @@ public class FallingObjManager : SingletonMono<FallingObjManager>
     private void SetDefaultWeights(Dictionary<FoodType, float> weights, int playerLevel)
     {
         // 默认权重配置
-        weights[FoodType.smail] = Mathf.Max(0, 40 - (playerLevel * 2));    // 小食物随等级减少
-        weights[FoodType.normal] = 30;                                      // 普通食物保持不变
-        weights[FoodType.big] = Mathf.Max(0, 5 + (playerLevel * 1));       // 大食物随等级增加
-        weights[FoodType.bad] = Mathf.Max(0, 25 + (playerLevel * 1));      // 坏食物随等级减少
+        weights[FoodType.smail] = Mathf.Max(0, 40 - (playerLevel * 2)); // 小食物随等级减少
+        weights[FoodType.normal] = 30; // 普通食物保持不变
+        weights[FoodType.big] = Mathf.Max(0, 5 + (playerLevel * 1)); // 大食物随等级增加
+        weights[FoodType.bad] = Mathf.Max(0, 25 + (playerLevel * 1)); // 坏食物随等级减少
     }
 
     /// <summary>
@@ -344,6 +357,7 @@ public class FallingObjManager : SingletonMono<FallingObjManager>
         {
             total += weight;
         }
+
         return total;
     }
 
@@ -364,7 +378,7 @@ public class FallingObjManager : SingletonMono<FallingObjManager>
             }
         }
     }
-    
+
     /// <summary>
     /// 创建新的池对象
     /// </summary>
@@ -376,6 +390,7 @@ public class FallingObjManager : SingletonMono<FallingObjManager>
         {
             foodComponent.SetReturnToPool(ReturnToFoodPool);
         }
+
         newFood.SetActive(false);
         objectPool.Enqueue(newFood);
     }
@@ -387,50 +402,55 @@ public class FallingObjManager : SingletonMono<FallingObjManager>
         {
             return;
         }
+
+        // 重置食物状态
+        var foodComponent = aFood.GetComponent<Food>();
+        if (foodComponent != null)
+        {
+            foodComponent.ResetFood();
+        }
+
         aFood.SetActive(false);
         // 重置食物位置到管理器位置
         aFood.transform.position = this.transform.position;
         aFood.transform.SetParent(this.transform);
-        
+
         if (objectPool == null)
         {
             objectPool = new Queue<GameObject>();
         }
+
         objectPool.Enqueue(aFood);
     }
 
     // 执行食物掉落（使用指定位置）
     private GameObject GetOrCreatFood(FoodData foodData, Vector3 spawnPosition)
     {
-        // 对象池为空，获取新对象
         if (objectPool == null || objectPool.Count == 0)
         {
             CreateNewPoolObject();
         }
 
-        // 获取对象池对象
         GameObject aFood = objectPool.Dequeue();
         var foodComponent = aFood.GetComponent<Food>();
-        
+
         if (foodComponent != null)
         {
+            // 重置食物状态
+            foodComponent.ResetFood();
+        
+            // 设置新的数据
             foodComponent.CurrentFoodData = foodData;
             foodComponent.SetReturnToPool(ReturnToFoodPool);
         }
-        
-        // 图标刷新
-        var spriteRenderer = aFood.GetComponent<SpriteRenderer>();
-        if (spriteRenderer != null && foodData.Icon != null)
-        {
-            spriteRenderer.sprite = foodData.Icon;
-        }
-        
-        // 使用计算好的位置
+
+        // 设置位置和激活
         aFood.transform.position = spawnPosition;
         aFood.SetActive(true);
+    
         return aFood;
     }
-    
+
     /// <summary>
     /// 初始化掉落物管理器，重置所有状态
     /// </summary>
@@ -438,16 +458,16 @@ public class FallingObjManager : SingletonMono<FallingObjManager>
     {
         // 重置计时器
         timeCount = 0f;
-        
+
         // 清空位置记录
         recentSpawnPositions.Clear();
-    
+
         // 回收所有已激活的食物对象
         ReturnAllActiveFoodsToPool();
-    
+
         // 重新初始化对象池
         ReinitializePool();
-    
+
         Debug.Log("掉落物管理器已初始化");
     }
 
@@ -463,6 +483,7 @@ public class FallingObjManager : SingletonMono<FallingObjManager>
                 Food foodComponent = child.GetComponent<Food>();
                 if (foodComponent != null)
                 {
+                    foodComponent.ResetFood();
                     ReturnToFoodPool(child.gameObject);
                 }
             }
@@ -482,19 +503,19 @@ public class FallingObjManager : SingletonMono<FallingObjManager>
         {
             objectPool = new Queue<GameObject>();
         }
-    
+
         foreach (Transform child in transform)
         {
             if (child != null && child.gameObject != null)
                 Destroy(child.gameObject);
         }
-    
+
         for (int i = 0; i < 10; i++)
         {
             CreateNewPoolObject();
         }
     }
-    
+
     /// <summary>
     /// 根据食物名称直接获取食物（用于特定情况）
     /// </summary>
@@ -510,7 +531,7 @@ public class FallingObjManager : SingletonMono<FallingObjManager>
             Debug.LogWarning($"食物 {foodName} 不存在于字典中");
         }
     }
-    
+
     // 在Inspector中可视化生成区域（调试用）
     private void OnDrawGizmosSelected()
     {

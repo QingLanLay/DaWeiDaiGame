@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6701f6c449416d140a6d9c4fc1791e59, type: 3}
-  m_Name: MenZi
+  m_Name: JiaoZi
   m_EditorClassIdentifier: 
-  id: 2
-  type: 2
-  foodName: 2
-  addSpeed: 0.3
-  addHeath: 5
+  id: 4
+  type: 1
+  foodName: 4
+  addSpeed: 0.1
+  addHeath: 15
   addAttack: 1
-  addAttackSpeed: 0.3
+  addAttackSpeed: 0
   damage: 0
-  gravityScale: 0.4
-  icon: {fileID: 21300000, guid: 084a98c3c3c373347b3b7fdaeda68d3f, type: 3}
+  gravityScale: 0.3
+  icon: {fileID: 21300000, guid: 24ee2edf049938942a7735064c28960e, type: 3}
   displayScale: 0.2
   maintainAspectRatio: 1
