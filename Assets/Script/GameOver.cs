@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,7 +10,7 @@ public class GameOver : MonoBehaviour
     public Image gameOverImage;
     public Button restartButton;
     public Button quitButton;
-    public Text scoreText;
+    public TextMeshProUGUI scoreText;
     public event Action StartGame;
     public PlayerController player;
     public DavidDie davidDieCp;

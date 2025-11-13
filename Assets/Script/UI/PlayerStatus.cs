@@ -1,15 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class PlayerStatus : MonoBehaviour
 {
-    public Text healthText;
-    public Text attackText;
-    public Text attackSpeedText;
-    public Text speedText;
-    public Text scoreText;
+    public TextMeshProUGUI healthText;
+    public TextMeshProUGUI attackText;
+    public TextMeshProUGUI attackSpeedText;
+    public TextMeshProUGUI speedText;
+    public TextMeshProUGUI scoreText;
 
     public PlayerController player;
 

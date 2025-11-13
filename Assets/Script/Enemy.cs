@@ -26,7 +26,6 @@ public class Enemy : MonoBehaviour
 
     [Header("移动设置")]
     public float horizontalSpeed = 3f;
-
     public float directionChangeInterval = 1f;
     public float normalSpeed = 2f;
     public float rushSpeed = 8f;
@@ -41,6 +40,7 @@ public class Enemy : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Animator animator;
     private GameObject player;
+    private BoxCollider2D boxCollider; // 新增：碰撞体引用
 
     // 状态变量
     private bool isDead = false;
@@ -62,6 +62,7 @@ public class Enemy : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
         player = GameObject.FindGameObjectWithTag("Player");
+        boxCollider = GetComponent<BoxCollider2D>(); // 获取碰撞体
     }
 
     private void OnEnable()
@@ -105,10 +106,8 @@ public class Enemy : MonoBehaviour
         // 应用等级缩放
         ApplyLevelScaling(wave);
 
-        // 设置外观
-        spriteRenderer.sprite = icon;
-        spriteRenderer.size = new Vector2(1, 1);
-        spriteRenderer.color = Color.white;
+        // 设置外观和碰撞体
+        SetupAppearanceAndCollider(enemyData);
 
         // 重置移动状态
         timer = 0f;
@@ -117,6 +116,57 @@ public class Enemy : MonoBehaviour
 
         // 根据敌人类型设置行为参数
         SetBehaviorByType();
+    }
+
+    /// <summary>
+    /// 设置外观和碰撞体
+    /// </summary>
+    private void SetupAppearanceAndCollider(EnemyData enemyData)
+    {
+        // 设置精灵
+        spriteRenderer.sprite = icon;
+        spriteRenderer.color = Color.white;
+
+        // 应用缩放
+        float scale = enemyData.Scale;
+        transform.localScale = new Vector3(scale, scale, 1f);
+
+        // 创建或更新碰撞体
+        CreateOrUpdateCollider();
+    }
+
+    /// <summary>
+    /// 创建或更新碰撞体以匹配图片比例
+    /// </summary>
+    private void CreateOrUpdateCollider()
+    {
+        if (spriteRenderer.sprite == null)
+        {
+            Debug.LogWarning("敌人没有设置精灵，无法创建碰撞体");
+            return;
+        }
+
+        // 确保有碰撞体组件
+        if (boxCollider == null)
+        {
+            boxCollider = gameObject.AddComponent<BoxCollider2D>();
+        }
+
+        // 获取精灵的原始尺寸（像素）
+        Sprite sprite = spriteRenderer.sprite;
+        float pixelsPerUnit = sprite.pixelsPerUnit;
+        
+        // 计算精灵的世界单位尺寸
+        float widthInWorldUnits = sprite.rect.width / pixelsPerUnit;
+        float heightInWorldUnits = sprite.rect.height / pixelsPerUnit;
+
+        // 设置碰撞体大小为精灵的原始尺寸
+        boxCollider.size = new Vector2(widthInWorldUnits, heightInWorldUnits);
+
+        // 可选：调整碰撞体偏移以确保居中
+        boxCollider.offset = Vector2.zero;
+
+        Debug.Log($"敌人碰撞体设置完成: {sprite.name} 尺寸: {widthInWorldUnits:F2}x{heightInWorldUnits:F2}");
     }
 
     /// <summary>
@@ -407,7 +457,7 @@ public class Enemy : MonoBehaviour
             Die();
         }
     }
-}
+}   
 
 [System.Serializable]
 public class EnemyScaling
