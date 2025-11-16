@@ -17,7 +17,7 @@ MonoBehaviour:
   foodName: 14
   addSpeed: -0.5
   addHeath: -15
-  addAttack: -3
+  addAttack: -1
   addAttackSpeed: -0.5
   damage: 0
   gravityScale: 0.2

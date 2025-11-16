@@ -384,6 +384,11 @@ public class Enemy : MonoBehaviour
                 Die();
                 if (other.CompareTag("Bullet"))
                 {
+                    if (ID == 2)
+                    {
+                        var playerController = player.GetComponent<PlayerController>();
+                        playerController.MaxSpeed += 0.5f;
+                    }
                     // 给予经验值
                     GiveExperience();
                 }

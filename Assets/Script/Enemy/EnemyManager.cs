@@ -14,8 +14,8 @@ public class EnemyManager : SingletonMono<EnemyManager>
     [Header("波次配置")]
     [SerializeField] private float baseEnemySpawnInterval = 3f;
     [SerializeField] private int enemiesPerWave = 8;
-    [SerializeField] private List<int> normalEnemyIDs = new List<int> { 0 };
-    [SerializeField] private List<int> eliteEnemyIDs = new List<int> { 1 };
+    [SerializeField] private List<int> normalEnemyIDs = new List<int> { 0,3 };
+    [SerializeField] private List<int> eliteEnemyIDs = new List<int> { 1,4 };
     [SerializeField] private List<int> bossEnemyIDs = new List<int> { 2 };
 
     // 核心变量

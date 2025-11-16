@@ -4825,7 +4825,8 @@ GameObject:
   - component: {fileID: 1146760114}
   - component: {fileID: 1146760117}
   - component: {fileID: 1146760116}
-  - component: {fileID: 1146760115}
+  - component: {fileID: 1146760119}
+  - component: {fileID: 1146760118}
   m_Layer: 0
   m_Name: Body
   m_TagString: Untagged
@@ -4848,43 +4849,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2129504804}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1146760115
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1146760113}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d247ba06193faa74d9335f5481b2b56c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  skeletonDataAsset: {fileID: 11400000, guid: 171604e7b5f521f439a6cfbfa9124ee6, type: 2}
-  initialSkinName: 
-  initialFlipX: 0
-  initialFlipY: 0
-  updateWhenInvisible: 3
-  separatorSlotNames: []
-  zSpacing: 0
-  useClipping: 1
-  immutableTriangles: 0
-  pmaVertexColors: 1
-  clearStateOnDisable: 0
-  tintBlack: 0
-  singleSubmesh: 0
-  fixDrawOrder: 0
-  addNormals: 0
-  calculateTangents: 0
-  maskInteraction: 0
-  maskMaterials:
-    materialsMaskDisabled: []
-    materialsInsideMask: []
-    materialsOutsideMask: []
-  disableRenderingOnOverride: 1
-  _animationName: 
-  loop: 0
-  timeScale: 1
 --- !u!23 &1146760116
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -4905,8 +4869,6 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 0d2b3df09d2155e4d8779de8fa6010c3, type: 2}
-  - {fileID: 2100000, guid: d873b68392afef44498af22103615387, type: 2}
   - {fileID: 2100000, guid: 0d2b3df09d2155e4d8779de8fa6010c3, type: 2}
   - {fileID: 2100000, guid: d873b68392afef44498af22103615387, type: 2}
   - {fileID: 2100000, guid: 0d2b3df09d2155e4d8779de8fa6010c3, type: 2}
@@ -4939,6 +4901,66 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1146760113}
   m_Mesh: {fileID: 0}
+--- !u!114 &1146760118
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1146760113}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9db98c60740638449864eb028fbe7ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skeletonDataAsset: {fileID: 11400000, guid: 171604e7b5f521f439a6cfbfa9124ee6, type: 2}
+  initialSkinName: 
+  initialFlipX: 0
+  initialFlipY: 0
+  updateWhenInvisible: 3
+  separatorSlotNames: []
+  zSpacing: 0
+  useClipping: 1
+  immutableTriangles: 0
+  pmaVertexColors: 1
+  clearStateOnDisable: 0
+  tintBlack: 0
+  singleSubmesh: 0
+  fixDrawOrder: 0
+  addNormals: 0
+  calculateTangents: 0
+  maskInteraction: 0
+  maskMaterials:
+    materialsMaskDisabled: []
+    materialsInsideMask: []
+    materialsOutsideMask: []
+  disableRenderingOnOverride: 1
+  translator:
+    autoReset: 1
+    useCustomMixMode: 1
+    layerMixModes: 01000000
+    layerBlendModes: 01000000
+--- !u!95 &1146760119
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1146760113}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 7742e768dcd3a944c874965683871309, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1165797802
 GameObject:
   m_ObjectHideFlags: 0
@@ -6167,7 +6189,7 @@ MonoBehaviour:
   restartButton: {fileID: 2002054370}
   quitButton: {fileID: 644593613}
   scoreText: {fileID: 1045601061}
-  player: {fileID: 0}
+  player: {fileID: 2129504806}
   davidDieCp: {fileID: 221356897}
 --- !u!114 &1566435037
 MonoBehaviour:
@@ -7104,10 +7126,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3aef619b207ccd146b29553453900b4f, type: 2}
   - {fileID: 11400000, guid: 7e803a111940c9b4ca7e3f2808e5f932, type: 2}
   - {fileID: 11400000, guid: 926295887850edb48ade6f69efa767c9, type: 2}
+  - {fileID: 11400000, guid: aebe7bf2271eb9e43b076658a163ff06, type: 2}
+  - {fileID: 11400000, guid: f0216d724b970b44fa9a680d31c346e9, type: 2}
   baseEnemySpawnInterval: 5
   enemiesPerWave: 8
-  normalEnemyIDs: 00000000
-  eliteEnemyIDs: 01000000
+  normalEnemyIDs: 0000000003000000
+  eliteEnemyIDs: 0100000004000000
   bossEnemyIDs: 02000000
 --- !u!4 &1990768703
 Transform:
@@ -7481,7 +7505,6 @@ GameObject:
   - component: {fileID: 2129504807}
   - component: {fileID: 2129504808}
   - component: {fileID: 2129504809}
-  - component: {fileID: 2129504810}
   m_Layer: 0
   m_Name: LiangZi
   m_TagString: Player
@@ -7504,7 +7527,7 @@ Rigidbody2D:
   m_Mass: 200
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 10
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -7606,6 +7629,7 @@ MonoBehaviour:
   level: 0
   gameOver: {fileID: 1566435034}
   mainCamera: {fileID: 519420031}
+  body: {fileID: 1146760113}
 --- !u!61 &2129504807
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -7731,27 +7755,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 81.04076, y: 1.0214405}
   m_EdgeRadius: 0
---- !u!95 &2129504810
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2129504801}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 7742e768dcd3a944c874965683871309, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -47,6 +47,8 @@ public class PlayerController : MonoBehaviour
     [Header("动画")]
     private Animator animator;
 
+    public GameObject body;
+
 #region 属性
 
     public float Health
@@ -81,8 +83,8 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         maxSpeed = 10f;
         level = 1;
-        animator = GetComponent<Animator>();    
-        
+        animator = GetComponentInChildren<Animator>();
+
         // 计算屏幕边界
         CalculateScreenBounds();
 
@@ -132,25 +134,32 @@ public class PlayerController : MonoBehaviour
         moveHorizontal = Input.GetAxisRaw("Horizontal");
         attackInput = Input.GetKey(KeyCode.J);
 
-        Vector3 absScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z); 
+        Vector3 absScale = new Vector3(Mathf.Abs(body.transform.localScale.x), body.transform.localScale.y,
+            body.transform.localScale.z);
         if (moveHorizontal >= 0.1f)
         {
-            transform.localScale = absScale;
-            animator.SetBool("isWalk",true);
+            body.transform.localScale = absScale;
+            animator.SetBool("isWalk", true);
         }
         else if (moveHorizontal <= -0.1f)
         {
-            transform.localScale = new Vector3(-absScale.x, absScale.y, absScale.z);
-            animator.SetBool("isWalk",true);
-        }else
+            body.transform.localScale = new Vector3(-absScale.x, absScale.y, absScale.z);
+            animator.SetBool("isWalk", true);
+        }
+        else
         {
-            animator.SetBool("isWalk",false);
+            animator.SetBool("isWalk", false);
         }
 
         float attackInterval = 1f / attackSpeed;
         if (attackInput && timeBullet >= attackInterval)
         {
             {
+                // 设置该状态的播放速度，例如调整为0.8倍速
+                animator.SetFloat("attackSpeed", attackSpeed*2f);
+                //设置动画
+                animator.SetBool("attack", true);
+
                 PerformAttack();
 
                 // 动态减少移速，攻速，攻击力
@@ -170,11 +179,30 @@ public class PlayerController : MonoBehaviour
 
                 timeBullet = 0;
             }
-        } // 子弹计时器
+        }
+        else
+        {
+            animator.SetBool("attack", false);
+        }
 
         if (health <= 0)
         {
             Dead();
+        }
+
+        ControlMaxSpeed();
+    }
+
+    private void ControlMaxSpeed()
+    {
+        if (currentSpeed > maxSpeed)
+        {
+           currentSpeed = maxSpeed;
+        }
+
+        if (attackSpeed >= maxSpeed)
+        {
+            attackSpeed = maxSpeed;
         }
     }
 
@@ -190,12 +218,12 @@ public class PlayerController : MonoBehaviour
         if (mainCamera == null) return;
 
         // 计算移动
-        Vector2 movement = new Vector2(moveHorizontal * currentSpeed, rb.velocity.y);
+        Vector2 movement = new Vector2(moveHorizontal * currentSpeed,rb.velocity.y);
         Vector3 newPosition = transform.position + (Vector3)movement * Time.fixedDeltaTime;
 
         // 应用边界限制（允许一半身体超出）
         newPosition.x = Mathf.Clamp(newPosition.x, minX - playerWidth * 0.5f, maxX + playerWidth * 0.5f);
-
+        
         // 直接设置位置，避免物理引擎的干扰
         rb.MovePosition(newPosition);
     }
@@ -217,6 +245,7 @@ public class PlayerController : MonoBehaviour
             float enemyAttack = enemy.Attack;
             health -= enemyAttack;
             Debug.Log("受到了伤害:" + enemyAttack);
+            animator.SetTrigger("beAttacked");
             enemy.Dead();
         }
 
@@ -225,6 +254,7 @@ public class PlayerController : MonoBehaviour
             // 如果可以吃，则执行吃方法
             if (davidDie.CheckCanEat())
             {
+                animator.SetTrigger("eat");
                 var food = other.GetComponent<Food>();
                 if (!food.isEat)
                 {
@@ -263,9 +293,9 @@ public class PlayerController : MonoBehaviour
         this.transform.position = startV3;
 
         // 重置基本属性
-        health = 100f;
-        currentSpeed = 3f;
-        attack = 1f;
+        health = 150f;
+        currentSpeed = 4f;
+        attack = 10f;
         attackSpeed = 1f;
 
         // 重置计时器和等级
