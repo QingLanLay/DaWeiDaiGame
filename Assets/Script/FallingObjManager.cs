@@ -87,7 +87,7 @@ public class FallingObjManager : SingletonMono<FallingObjManager>
 
         // 动态计算刷新间隔（随等级提高刷新加快）
         float currentSpawnInterval = Mathf.Max(minSpawnInterval,
-            baseSpawnInterval - (playerController.level * 0.4f));
+            baseSpawnInterval - (playerController.level * 0.3f));
 
         if (timeCount >= currentSpawnInterval)
         {
@@ -384,6 +384,11 @@ public class FallingObjManager : SingletonMono<FallingObjManager>
     /// </summary>
     private void CreateNewPoolObject()
     {
+        if (food == null)
+        {
+            return;
+        }
+        
         GameObject newFood = GameObject.Instantiate<GameObject>(food, this.transform);
         var foodComponent = newFood.GetComponent<Food>();
         if (foodComponent != null)

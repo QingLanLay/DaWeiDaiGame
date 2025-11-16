@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5635387733155443881}
   - component: {fileID: 6601718560955915703}
   - component: {fileID: 4473102066075236372}
+  - component: {fileID: -5131891364061864337}
   m_Layer: 6
   m_Name: Food
   m_TagString: Food
@@ -81,7 +82,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 1
-  m_Size: {x: 8.4, y: 8.48}
+  m_Size: {x: 4.6, y: 4.57}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 0
@@ -123,8 +124,8 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 8.4, y: 8.48}
-    newSize: {x: 8.4, y: 8.48}
+    oldSize: {x: 4.74, y: 4.74}
+    newSize: {x: 4.6, y: 4.57}
     adaptiveTilingThreshold: 0.5
     drawMode: 1
     adaptiveTiling: 0
@@ -171,4 +172,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5b1efc9e79acf747ab2d8a13750e455, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  glowColor: {r: 0.3, g: 1, b: 0.3, a: 1}
+  glowSize: 24.23
+  glowStrength: 6.43
   currentFoodData: {fileID: 0}
+--- !u!114 &-5131891364061864337
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7883826809895418569}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 021ff055f5342054a9fe6566de8a4ddd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  glowEnabled: 1
+  glowColor: {r: 1, g: 0.4, b: 0.2, a: 1}
+  glowSize: 0.1
+  glowStrength: 1.5
+  spriteRenderer: {fileID: 0}
+  glowMaterial: {fileID: 0}
+  originalMaterial: {fileID: 0}

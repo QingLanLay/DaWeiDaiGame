@@ -1,0 +1,89 @@
+
+laingzi.png
+size: 2031,1801
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+LLeg
+  rotate: false
+  xy: 1413, 1185
+  size: 571, 614
+  orig: 576, 614
+  offset: 5, 0
+  index: -1
+LRam
+  rotate: false
+  xy: 1005, 893
+  size: 406, 906
+  orig: 406, 906
+  offset: 0, 0
+  index: -1
+LegBase
+  rotate: false
+  xy: 622, 126
+  size: 959, 614
+  orig: 961, 616
+  offset: 1, 1
+  index: -1
+RLeg
+  rotate: false
+  xy: 1583, 570
+  size: 446, 613
+  orig: 446, 613
+  offset: 0, 0
+  index: -1
+body
+  rotate: false
+  xy: 2, 742
+  size: 1001, 1057
+  orig: 1001, 1057
+  offset: 0, 0
+  index: -1
+eye
+  rotate: false
+  xy: 1005, 761
+  size: 442, 130
+  orig: 445, 134
+  offset: 1, 2
+  index: -1
+hair
+  rotate: true
+  xy: 1583, 2
+  size: 566, 340
+  orig: 570, 343
+  offset: 2, 1
+  index: -1
+head
+  rotate: false
+  xy: 2, 125
+  size: 618, 615
+  orig: 621, 617
+  offset: 2, 1
+  index: -1
+mouth
+  rotate: true
+  xy: 1413, 1036
+  size: 147, 110
+  orig: 149, 112
+  offset: 1, 1
+  index: -1
+
+laingzi2.png
+size: 945,910
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+RRam
+  rotate: false
+  xy: 2, 2
+  size: 406, 906
+  orig: 406, 906
+  offset: 0, 0
+  index: -1
+openhead
+  rotate: true
+  xy: 410, 165
+  size: 743, 533
+  orig: 746, 536
+  offset: 3, 0
+  index: -1

@@ -193,7 +193,7 @@ public class DavidDie : MonoBehaviour
             case >= 50000:
                 level = 4;
                 break;
-            case >= 5000:
+            case >= 10000:
                 level = 3;
                 break;
             case >= 1000:
