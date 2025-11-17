@@ -478,6 +478,4 @@ public class EnemyScaling
     public float attackScale = 2f;
     public float speedScale = 0.1f;
     public float expScale = 4f;
-
-
 }

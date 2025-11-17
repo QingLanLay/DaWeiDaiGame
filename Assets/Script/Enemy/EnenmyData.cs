@@ -77,4 +77,8 @@ public class EnemyData : ScriptableObject
         get => scale;
         set => scale = value;
     }
+    
+    [SerializeField]
+    public AudioClip Sound;
 }
+
