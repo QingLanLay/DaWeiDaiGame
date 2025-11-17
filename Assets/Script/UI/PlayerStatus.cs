@@ -29,7 +29,7 @@ public class PlayerStatus : MonoBehaviour
         healthText.text = "血糖:" + player.Health.ToString();
         attackText.text = "血脂:" + player.Attack.ToString();
         attackSpeedText.text = "血压:" + player.AttackSpeed.ToString();
-        speedText.text = "半月板强度:" + player.MaxSpeed.ToString();
+        speedText.text = "半月板强度:" + player.currentSpeed.ToString();
         scoreText.text = "得分:" + davidDie.currentExp.ToString();
     }
 }

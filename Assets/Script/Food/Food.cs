@@ -348,7 +348,7 @@ public class Food : MonoBehaviour
         player.Attack += currentFoodData.AddAttack;
         player.Health += currentFoodData.AddHeath;
         player.AttackSpeed += currentFoodData.AddAttackSpeed;
-        player.MaxSpeed += currentFoodData.AddSpeed;
+        player.currentSpeed += currentFoodData.AddSpeed;
     }
 
     private void OnTriggerEnter2D(Collider2D other)

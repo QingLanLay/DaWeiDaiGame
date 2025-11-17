@@ -8,6 +8,7 @@ public class Bullet : MonoBehaviour
     private Rigidbody2D rb;
     private float attack;
     private bool isReturning;
+    private int level;
     
     public float Attack
     {
@@ -40,13 +41,14 @@ public class Bullet : MonoBehaviour
 
     private void OnEnable()
     {
+        level = DavidDie.Instance.level;
         timeCount = 0;
         isReturning = false;
-        
+        float scale = 0.1f * level;
+        this.transform.localScale = new Vector3(scale, scale, scale);
         rb.velocity = Vector2.up * 3f;
         attack = GetComponentInParent<PlayerController>().Attack;
         
-
     }
 
     private void OnDisable()

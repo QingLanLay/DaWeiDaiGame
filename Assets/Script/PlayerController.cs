@@ -20,10 +20,11 @@ public class PlayerController : MonoBehaviour
     // 基本属性：生命值、移速、攻击力、攻击频率
     [SerializeField]
     private float health = 150f;
-
-    [FormerlySerializedAs("maxSpeed")]
+    
     [SerializeField]
-    private float currentSpeed = 4f;
+    public float currentSpeed = 4f;
+
+    public float realCurrentSpeed;
 
     [SerializeField]
     private float attack = 10f;
@@ -59,8 +60,8 @@ public class PlayerController : MonoBehaviour
 
     public float MaxSpeed
     {
-        get => currentSpeed;
-        set => currentSpeed = value;
+        get => maxSpeed;
+        set => maxSpeed = value;
     }
 
     public float Attack
@@ -129,10 +130,12 @@ public class PlayerController : MonoBehaviour
     {
         level = davidDie.level;
         timeBullet += Time.deltaTime;
+        realCurrentSpeed = currentSpeed;
 
         // 获取输入值
         moveHorizontal = Input.GetAxisRaw("Horizontal");
         attackInput = Input.GetKey(KeyCode.J);
+        bool lowSpeedInput = Input.GetKey(KeyCode.K); 
 
         Vector3 absScale = new Vector3(Mathf.Abs(body.transform.localScale.x), body.transform.localScale.y,
             body.transform.localScale.z);
@@ -190,6 +193,15 @@ public class PlayerController : MonoBehaviour
             Dead();
         }
 
+        if (lowSpeedInput)
+        {
+            realCurrentSpeed = currentSpeed / 2;
+        }
+        else
+        {
+            realCurrentSpeed = currentSpeed;
+        }
+        
         ControlMaxSpeed();
     }
 
@@ -200,10 +212,12 @@ public class PlayerController : MonoBehaviour
            currentSpeed = maxSpeed;
         }
 
-        if (attackSpeed >= maxSpeed)
+        if (attackSpeed > maxSpeed)
         {
             attackSpeed = maxSpeed;
         }
+        
+        
     }
 
 
@@ -218,7 +232,7 @@ public class PlayerController : MonoBehaviour
         if (mainCamera == null) return;
 
         // 计算移动
-        Vector2 movement = new Vector2(moveHorizontal * currentSpeed,rb.velocity.y);
+        Vector2 movement = new Vector2(moveHorizontal * realCurrentSpeed,rb.velocity.y);
         Vector3 newPosition = transform.position + (Vector3)movement * Time.fixedDeltaTime;
 
         // 应用边界限制（允许一半身体超出）
@@ -295,6 +309,7 @@ public class PlayerController : MonoBehaviour
         // 重置基本属性
         health = 150f;
         currentSpeed = 4f;
+        maxSpeed = 10f;
         attack = 10f;
         attackSpeed = 1f;
 

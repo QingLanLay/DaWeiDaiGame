@@ -7,7 +7,7 @@ using UnityEngine.PlayerLoop;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 
-public class DavidDie : MonoBehaviour
+public class DavidDie : SingletonMono<DavidDie>
 {
     public int level;
     private bool canEat;
@@ -15,6 +15,7 @@ public class DavidDie : MonoBehaviour
     public List<Image> IconList;
     private GameObject prefab;
     private PlayerController player;
+    public Image icon;
     
     // 经验条
     public int currentExp;
@@ -27,8 +28,9 @@ public class DavidDie : MonoBehaviour
     // 控制游戏开始
     public bool gameStarted = false;
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         level = 1;
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
         inDavidDie = new List<FoodName>();
@@ -36,6 +38,7 @@ public class DavidDie : MonoBehaviour
         Init();
 
         timeSlider.interactable = false;
+        
     }
 
     private void Init()
@@ -49,6 +52,8 @@ public class DavidDie : MonoBehaviour
 
     private void Update()
     {
+        icon.color = rankColors[level - 1];
+        
         // 检测是否还能继续吃
         if (CheckCanEat())
         {
@@ -94,6 +99,8 @@ public class DavidDie : MonoBehaviour
             for (int i = 0; i < IconList.Count; i++)
             {
                 IconList[i].sprite = null;
+                IconList[i].color = Color.clear;
+
             }
         }
     }
@@ -166,7 +173,7 @@ public class DavidDie : MonoBehaviour
         player.Health += health;
         player.Attack += attack;
         player.AttackSpeed += attackSpeed;
-        player.MaxSpeed += speed;
+        player.currentSpeed += speed;
     }
 
     // 检测是否还能继续吃
@@ -258,4 +265,14 @@ public class DavidDie : MonoBehaviour
             }
         }
     }
+    
+    // 五个等级的颜色
+    private readonly Color[] rankColors = new Color[]
+    {
+        new Color(1.0f, 1.0f, 1.0f),    // 普通 - 白色
+        new Color(0.0f, 1.0f, 0.0f),    // 精良 - 绿色
+        new Color(0.0f, 0.0f, 1.0f),    // 稀有 - 蓝色
+        new Color(0.5f, 0.0f, 0.5f),    // 史诗 - 紫色
+        new Color(1.0f, 0.647f, 0.0f)   // 传说 - 橙色
+    };
 }
