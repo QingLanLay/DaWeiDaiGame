@@ -79,6 +79,7 @@ public class EnemyData : ScriptableObject
     }
     
     [SerializeField]
-    public AudioClip Sound;
+    public AudioClip efffectClip;
+    
 }
 

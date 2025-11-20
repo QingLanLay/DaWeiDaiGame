@@ -9,6 +9,7 @@ public class GameSettingPanelControl : MonoBehaviour
     public GameObject gameSettingPanel;
     public Button gameSettingButton;
     public Button backButton;
+
     public GameObject startPanel;
 
     // Start is called before the first frame update
@@ -25,7 +26,7 @@ public class GameSettingPanelControl : MonoBehaviour
         backButton.onClick.AddListener(CloseGameSettingPanel);
     }
 
-
+    //攻击力//
     public void OpenGameSettingPanel()
     {
         if (!gameSettingPanel.activeSelf)
@@ -52,4 +53,7 @@ public class GameSettingPanelControl : MonoBehaviour
         gameSettingPanel.SetActive(false);
         startPanel.SetActive(false);
     }
+    
+    
+    
 }

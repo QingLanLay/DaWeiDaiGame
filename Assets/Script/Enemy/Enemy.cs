@@ -49,7 +49,7 @@ public class Enemy : MonoBehaviour
     private int wave;
     private bool isRushing = false;
     private float nextBehaviorChangeTime = 0f;
-
+    private AudioClip effectClip;
     public float Attack
     {
         set => attack = value;
@@ -77,6 +77,8 @@ public class Enemy : MonoBehaviour
 
         // 初始随机方向
         ChangeDirection();
+        
+        // TODO：如果是雨姐，修改背景音乐
     }
 
     private void OnDisable()
@@ -102,6 +104,8 @@ public class Enemy : MonoBehaviour
         attack = enemyData.Attack;
         icon = enemyData.Icon;
         exp = enemyData.Exp;
+        effectClip = enemyData.efffectClip;
+        
 
         // 应用等级缩放
         ApplyLevelScaling(wave);
@@ -369,6 +373,17 @@ public class Enemy : MonoBehaviour
 
         if (other.CompareTag("Bullet"))
         {
+            
+            // TODO:音效
+            // 受击触发概率
+            var randomNum = Random.value *100;
+            if (randomNum <= 10)
+            {
+                // 触发受击音效
+                AudioManager.Instance.PlayEffectAudio();
+            }
+
+
             // 受到子弹伤害
             health -= other.GetComponent<Bullet>().Attack;
             other.GetComponent<Bullet>().ReturnToPool();
