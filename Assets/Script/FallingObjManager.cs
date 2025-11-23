@@ -6,6 +6,18 @@ using Random = UnityEngine.Random;
 
 public class FallingObjManager : SingletonMono<FallingObjManager>
 {
+    #region 类型定义
+    // 类型权重配置
+    [System.Serializable]
+    public class FoodTypeWeight
+    {
+        public FoodType foodType;
+        public float baseWeight; // 基础权重
+        public float levelFactor; // 等级影响因子
+    }
+    #endregion
+
+    #region 变量声明
     // 对象池
     private Queue<GameObject> objectPool;
 
@@ -21,15 +33,6 @@ public class FallingObjManager : SingletonMono<FallingObjManager>
     private List<FoodData> foodList;
 
     public Dictionary<FoodName, FoodData> foodDictionary;
-
-    // 类型权重配置
-    [System.Serializable]
-    public class FoodTypeWeight
-    {
-        public FoodType foodType;
-        public float baseWeight; // 基础权重
-        public float levelFactor; // 等级影响因子
-    }
 
     [SerializeField]
     private List<FoodTypeWeight> foodTypeWeights;
@@ -53,7 +56,9 @@ public class FallingObjManager : SingletonMono<FallingObjManager>
 
     private PlayerController playerController;
     private List<Vector3> recentSpawnPositions; // 最近生成位置记录
+    #endregion
 
+    #region Unity 生命周期方法
     protected override void Awake()
     {
         base.Awake();
@@ -112,6 +117,95 @@ public class FallingObjManager : SingletonMono<FallingObjManager>
         }
     }
 
+    // 在Inspector中可视化生成区域（调试用）
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.green;
+        Vector3 center = transform.position;
+        Vector3 size = new Vector3(spawnAreaWidth, 0.2f, 0);
+        Gizmos.DrawWireCube(center, size);
+    }
+    #endregion
+
+    #region 初始化方法
+    private void Init()
+    {
+        // 初始化对象池
+        if (objectPool == null)
+        {
+            objectPool = new Queue<GameObject>();
+        }
+
+        // 创建对象池内默认对象
+        if (objectPool.Count == 0)
+        {
+            for (int i = 0; i < 10; i++)
+            {
+                CreateNewPoolObject();
+            }
+        }
+    }
+
+    /// <summary>
+    /// 初始化掉落物管理器，重置所有状态
+    /// </summary>
+    public void InitializeFallingObjManager()
+    {
+        // 重置计时器
+        timeCount = 0f;
+
+        // 清空位置记录
+        recentSpawnPositions.Clear();
+
+        // 回收所有已激活的食物对象
+        ReturnAllActiveFoodsToPool();
+
+        // 重新初始化对象池
+        ReinitializePool();
+
+        Debug.Log("掉落物管理器已初始化");
+    }
+    #endregion
+
+    #region 生成逻辑
+    /// <summary>
+    /// 计算单次生成数量
+    /// </summary>
+    private int CalculateSpawnCount()
+    {
+        if (playerController == null) return 1;
+
+        int level = playerController.level;
+
+        // 基础概率表：等级 -> [最小数量, 最大数量]
+        var spawnTable = new Dictionary<int, Vector2Int>
+        {
+            { 1, new Vector2Int(1, 1) },
+            { 2, new Vector2Int(1, 2) },
+            { 3, new Vector2Int(1, 2) },
+            { 4, new Vector2Int(1, 3) },
+            { 5, new Vector2Int(2, 3) }
+        };
+
+        Vector2Int range = spawnTable.ContainsKey(level) ? spawnTable[level] : new Vector2Int(1, maxFoodPerSpawn);
+
+        return Random.Range(range.x, range.y + 1);
+    }
+
+    /// <summary>
+    /// 生成随机类型的食物
+    /// </summary>
+    private void SpawnRandomFood(Vector3 spawnPosition)
+    {
+        FoodData foodData = GetRandomFoodByType();
+        if (foodData != null)
+        {
+            GetOrCreatFood(foodData, spawnPosition);
+        }
+    }
+    #endregion
+
+    #region 位置计算与验证
     /// <summary>
     /// 获取均匀分布的生成位置
     /// </summary>
@@ -236,43 +330,9 @@ public class FallingObjManager : SingletonMono<FallingObjManager>
             transform.position.z
         );
     }
+    #endregion
 
-    /// <summary>
-    /// 计算单次生成数量
-    /// </summary>
-    private int CalculateSpawnCount()
-    {
-        if (playerController == null) return 1;
-
-        int level = playerController.level;
-
-        // 基础概率表：等级 -> [最小数量, 最大数量]
-        var spawnTable = new Dictionary<int, Vector2Int>
-        {
-            { 1, new Vector2Int(1, 1) },
-            { 2, new Vector2Int(1, 2) },
-            { 3, new Vector2Int(1, 2) },
-            { 4, new Vector2Int(1, 3) },
-            { 5, new Vector2Int(2, 3) }
-        };
-
-        Vector2Int range = spawnTable.ContainsKey(level) ? spawnTable[level] : new Vector2Int(1, maxFoodPerSpawn);
-
-        return Random.Range(range.x, range.y + 1);
-    }
-
-    /// <summary>
-    /// 生成随机类型的食物
-    /// </summary>
-    private void SpawnRandomFood(Vector3 spawnPosition)
-    {
-        FoodData foodData = GetRandomFoodByType();
-        if (foodData != null)
-        {
-            GetOrCreatFood(foodData, spawnPosition);
-        }
-    }
-
+    #region 食物类型权重与随机选择
     /// <summary>
     /// 根据类型权重随机选择食物
     /// </summary>
@@ -360,25 +420,9 @@ public class FallingObjManager : SingletonMono<FallingObjManager>
 
         return total;
     }
+    #endregion
 
-    private void Init()
-    {
-        // 初始化对象池
-        if (objectPool == null)
-        {
-            objectPool = new Queue<GameObject>();
-        }
-
-        // 创建对象池内默认对象
-        if (objectPool.Count == 0)
-        {
-            for (int i = 0; i < 10; i++)
-            {
-                CreateNewPoolObject();
-            }
-        }
-    }
-
+    #region 对象池管理
     /// <summary>
     /// 创建新的池对象
     /// </summary>
@@ -388,7 +432,7 @@ public class FallingObjManager : SingletonMono<FallingObjManager>
         {
             return;
         }
-        
+
         GameObject newFood = GameObject.Instantiate<GameObject>(food, this.transform);
         var foodComponent = newFood.GetComponent<Food>();
         if (foodComponent != null)
@@ -429,7 +473,7 @@ public class FallingObjManager : SingletonMono<FallingObjManager>
     }
 
     // 执行食物掉落（使用指定位置）
-    private GameObject GetOrCreatFood(FoodData foodData, Vector3 spawnPosition)
+    public GameObject GetOrCreatFood(FoodData foodData, Vector3 spawnPosition)
     {
         if (objectPool == null || objectPool.Count == 0)
         {
@@ -443,7 +487,7 @@ public class FallingObjManager : SingletonMono<FallingObjManager>
         {
             // 重置食物状态
             foodComponent.ResetFood();
-        
+
             // 设置新的数据
             foodComponent.CurrentFoodData = foodData;
             foodComponent.SetReturnToPool(ReturnToFoodPool);
@@ -452,28 +496,8 @@ public class FallingObjManager : SingletonMono<FallingObjManager>
         // 设置位置和激活
         aFood.transform.position = spawnPosition;
         aFood.SetActive(true);
-    
+
         return aFood;
-    }
-
-    /// <summary>
-    /// 初始化掉落物管理器，重置所有状态
-    /// </summary>
-    public void InitializeFallingObjManager()
-    {
-        // 重置计时器
-        timeCount = 0f;
-
-        // 清空位置记录
-        recentSpawnPositions.Clear();
-
-        // 回收所有已激活的食物对象
-        ReturnAllActiveFoodsToPool();
-
-        // 重新初始化对象池
-        ReinitializePool();
-
-        Debug.Log("掉落物管理器已初始化");
     }
 
     /// <summary>
@@ -520,7 +544,9 @@ public class FallingObjManager : SingletonMono<FallingObjManager>
             CreateNewPoolObject();
         }
     }
+    #endregion
 
+    #region 公共方法
     /// <summary>
     /// 根据食物名称直接获取食物（用于特定情况）
     /// </summary>
@@ -537,12 +563,17 @@ public class FallingObjManager : SingletonMono<FallingObjManager>
         }
     }
 
-    // 在Inspector中可视化生成区域（调试用）
-    private void OnDrawGizmosSelected()
+    public FoodData GetFoodDataByID(int id)
     {
-        Gizmos.color = Color.green;
-        Vector3 center = transform.position;
-        Vector3 size = new Vector3(spawnAreaWidth, 0.2f, 0);
-        Gizmos.DrawWireCube(center, size);
+        FoodData currentFoodData = null;
+        foodList.ForEach(foodData =>
+        {
+            if (foodData.ID == id)
+            {
+                currentFoodData =  foodData;
+            }
+        });
+        return currentFoodData;
     }
+    #endregion
 }

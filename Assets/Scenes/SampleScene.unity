@@ -445,6 +445,7 @@ GameObject:
   - component: {fileID: 123217503}
   - component: {fileID: 123217502}
   - component: {fileID: 123217504}
+  - component: {fileID: 123217505}
   m_Layer: 5
   m_Name: GameSettingPanel
   m_TagString: Untagged
@@ -540,6 +541,22 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &123217505
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 123217500}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 536a7807e7138e5429eda086044f69dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameSettingPanel: {fileID: 123217500}
+  gameSettingButton: {fileID: 776797691}
+  backButton: {fileID: 1997056389}
+  startPanel: {fileID: 609430802}
 --- !u!1 &159064620
 GameObject:
   m_ObjectHideFlags: 0
@@ -804,6 +821,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   level: 0
+  currentExp: 0
+  gameStarted: 0
   IconList:
   - {fileID: 1059837807}
   - {fileID: 804169025}
@@ -820,9 +839,7 @@ MonoBehaviour:
   - {fileID: 1100589400}
   - {fileID: 43302246}
   icon: {fileID: 367348594}
-  currentExp: 0
   timeSlider: {fileID: 925367912}
-  gameStarted: 0
 --- !u!114 &221356898
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1063,8 +1080,8 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_HighlightedColor: {r: 0.6117647, g: 0.6117647, b: 0.6117647, a: 1}
+    m_PressedColor: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
@@ -1271,8 +1288,8 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_HighlightedColor: {r: 0.6132076, g: 0.6132076, b: 0.6132076, a: 1}
+    m_PressedColor: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
@@ -3094,7 +3111,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1259566218}
+      - m_Target: {fileID: 123217505}
         m_TargetAssemblyTypeName: GameSettingPanelControl, Assembly-CSharp
         m_MethodName: StartGame
         m_Mode: 1
@@ -3752,19 +3769,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 776797692}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 11500000, guid: 536a7807e7138e5429eda086044f69dc, type: 3}
-        m_TargetAssemblyTypeName: UnityEngine.Object, UnityEngine
-        m_MethodName: 
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &776797692
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6303,7 +6308,6 @@ GameObject:
   - component: {fileID: 1259566215}
   - component: {fileID: 1259566214}
   - component: {fileID: 1259566217}
-  - component: {fileID: 1259566218}
   m_Layer: 5
   m_Name: PlayerStatus
   m_TagString: Untagged
@@ -6415,22 +6419,6 @@ MonoBehaviour:
   m_Spacing: {x: 111.1, y: 0}
   m_Constraint: 0
   m_ConstraintCount: 2
---- !u!114 &1259566218
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1259566212}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 536a7807e7138e5429eda086044f69dc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gameSettingPanel: {fileID: 123217500}
-  gameSettingButton: {fileID: 776797691}
-  backButton: {fileID: 1997056389}
-  startPanel: {fileID: 609430802}
 --- !u!1 &1288016087
 GameObject:
   m_ObjectHideFlags: 0
@@ -7373,6 +7361,7 @@ MonoBehaviour:
   scoreText: {fileID: 1045601061}
   player: {fileID: 2129504806}
   davidDieCp: {fileID: 221356897}
+  gameSettingPanel: {fileID: 123217500}
 --- !u!114 &1566435037
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8711,8 +8700,8 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
+    m_HighlightedColor: {r: 0.6117647, g: 0.6117647, b: 0.6117647, a: 1}
+    m_PressedColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
@@ -8733,7 +8722,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1259566218}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: GameSettingPanelControl, Assembly-CSharp
         m_MethodName: CloseGameSettingPanel
         m_Mode: 1
@@ -9125,14 +9114,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   health: 100
   currentSpeed: 4
-  realCurrentSpeed: 0
   attack: 10
   attackSpeed: 0.8
+  realCurrentSpeed: 0
   davidDie: {fileID: 221356897}
-  level: 0
   gameOver: {fileID: 1566435034}
   mainCamera: {fileID: 519420031}
   body: {fileID: 1146760113}
+  level: 0
 --- !u!61 &2129504807
 BoxCollider2D:
   m_ObjectHideFlags: 0

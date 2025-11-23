@@ -5,19 +5,21 @@ using UnityEngine.UI;
 
 public class GameSettingPanelControl : MonoBehaviour
 {
+#region 变量声明
     // 设置面板
     public GameObject gameSettingPanel;
     public Button gameSettingButton;
     public Button backButton;
-
     public GameObject startPanel;
+#endregion
 
+#region Unity 生命周期方法
     // Start is called before the first frame update
     void Start()
     {
         if (gameSettingPanel == null)
         {
-            gameSettingPanel = transform.Find("Button/GameSettingPanel")?.gameObject;
+            gameSettingPanel = gameObject;
         }
 
         Time.timeScale = 0;
@@ -25,8 +27,9 @@ public class GameSettingPanelControl : MonoBehaviour
         gameSettingButton.onClick.AddListener(OpenGameSettingPanel);
         backButton.onClick.AddListener(CloseGameSettingPanel);
     }
+#endregion
 
-    //攻击力//
+#region 面板控制方法
     public void OpenGameSettingPanel()
     {
         if (!gameSettingPanel.activeSelf)
@@ -53,7 +56,5 @@ public class GameSettingPanelControl : MonoBehaviour
         gameSettingPanel.SetActive(false);
         startPanel.SetActive(false);
     }
-    
-    
-    
+#endregion
 }

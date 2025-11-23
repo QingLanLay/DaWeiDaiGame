@@ -14,6 +14,7 @@ public class GameOver : MonoBehaviour
     public event Action StartGame;
     public PlayerController player;
     public DavidDie davidDieCp;
+    public GameObject gameSettingPanel;
     
     // Start is called before the first frame update
      void Awake()
@@ -43,6 +44,16 @@ public class GameOver : MonoBehaviour
         if (gameObject.activeSelf == true)
         {
             ClosePanel();
+        }
+        
+        
+        var gameSettingPanelControl = gameSettingPanel.GetComponent<GameSettingPanelControl>();
+        Debug.Log("设置面板开启");
+        if (gameSettingPanelControl != null)
+        {
+            Debug.Log("成功获取");
+
+            gameSettingPanelControl.CloseGameSettingPanel();
         }
     }
 

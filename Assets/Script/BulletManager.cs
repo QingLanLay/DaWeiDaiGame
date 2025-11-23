@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class BulletManager : SingletonMono<BulletManager>
 {
+    #region 变量声明
     // 子弹预制体
     [SerializeField]
     private GameObject bullet;
@@ -10,16 +11,19 @@ public class BulletManager : SingletonMono<BulletManager>
 
     // 子弹对象池
     public Queue<GameObject> bulletPool;
+    #endregion
 
-
-    protected override  void Awake()
+    #region Unity 生命周期方法
+    protected override void Awake()
     {
         base.Awake();
         
         Initializer(); 
         mouth = transform.parent.Find("Mouth")?.gameObject;
     }
+    #endregion
 
+    #region 初始化方法
     private void Initializer()
     {
         // 初始化对象池
@@ -39,6 +43,36 @@ public class BulletManager : SingletonMono<BulletManager>
         }
     }
 
+    /// <summary>
+    /// 初始化子弹管理器，重置所有状态
+    /// </summary>
+    public void InitializeBulletManager()
+    {
+        // 回收所有活跃的子弹
+        ReturnAllActiveBulletsToPool();
+    
+        // 重新初始化对象池
+        ReinitializeBulletPool();
+    
+        // 确保mouth引用正确
+        EnsureMouthReference();
+    
+        Debug.Log("子弹管理器已初始化");
+    }
+
+    /// <summary>
+    /// 确保mouth引用正确
+    /// </summary>
+    private void EnsureMouthReference()
+    {
+        if (mouth == null)
+        {
+            mouth = transform.parent?.Find("Mouth")?.gameObject;
+        }
+    }
+    #endregion
+
+    #region 子弹获取与生成
     public GameObject GetBullet()
     {
         // 对象池内有对象
@@ -71,23 +105,9 @@ public class BulletManager : SingletonMono<BulletManager>
             return transform.position + new Vector3(0, 1, 0);
         }
     }
-    /// <summary>
-    /// 初始化子弹管理器，重置所有状态
-    /// </summary>
-    public void InitializeBulletManager()
-    {
-        // 回收所有活跃的子弹
-        ReturnAllActiveBulletsToPool();
-    
-        // 重新初始化对象池
-        ReinitializeBulletPool();
-    
-        // 确保mouth引用正确
-        EnsureMouthReference();
-    
-        Debug.Log("子弹管理器已初始化");
-    }
+    #endregion
 
+    #region 对象池管理
     /// <summary>
     /// 回收所有活跃的子弹对象到对象池
     /// </summary>
@@ -130,11 +150,6 @@ public class BulletManager : SingletonMono<BulletManager>
     }
 
     /// <summary>
-    /// 将子弹返回到对象池
-    /// </summary>
-    /// <param name="bulletObj">要回收的子弹</param>
-   
-    /// <summary>
     /// 重新初始化子弹对象池
     /// </summary>
     private void ReinitializeBulletPool()
@@ -163,15 +178,5 @@ public class BulletManager : SingletonMono<BulletManager>
             bulletPool.Enqueue(newBullet);
         }
     }
-
-    /// <summary>
-    /// 确保mouth引用正确
-    /// </summary>
-    private void EnsureMouthReference()
-    {
-        if (mouth == null)
-        {
-            mouth = transform.parent?.Find("Mouth")?.gameObject;
-        }
-    }
+    #endregion
 }

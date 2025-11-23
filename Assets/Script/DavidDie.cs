@@ -9,25 +9,35 @@ using UnityEngine.UI;
 
 public class DavidDie : SingletonMono<DavidDie>
 {
+    #region 变量声明
     public int level;
+    public int currentExp;
+    public bool gameStarted = false;
+    
+    // UI组件
+    public List<Image> IconList;
+    public Image icon;
+    public Slider timeSlider;
+    
+    // 私有变量
     private bool canEat;
     private List<FoodName> inDavidDie;
-    public List<Image> IconList;
     private GameObject prefab;
     private PlayerController player;
-    public Image icon;
-    
-    // 经验条
-    public int currentExp;
-    // 滑动条
-    public Slider timeSlider;
-
-    // 消化时间
     private float time = 0;
     
-    // 控制游戏开始
-    public bool gameStarted = false;
+    // 等级颜色配置
+    private readonly Color[] rankColors = new Color[]
+    {
+        new Color(1.0f, 1.0f, 1.0f),    // 普通 - 白色
+        new Color(0.0f, 1.0f, 0.0f),    // 精良 - 绿色
+        new Color(0.0f, 0.0f, 1.0f),    // 稀有 - 蓝色
+        new Color(0.5f, 0.0f, 0.5f),    // 史诗 - 紫色
+        new Color(1.0f, 0.647f, 0.0f)   // 传说 - 橙色
+    };
+    #endregion
 
+    #region Unity 生命周期方法
     protected override void Awake()
     {
         base.Awake();
@@ -38,17 +48,7 @@ public class DavidDie : SingletonMono<DavidDie>
         Init();
 
         timeSlider.interactable = false;
-        
     }
-
-    private void Init()
-    {
-        foreach (var icon in IconList)
-        {
-            icon.color = Color.clear;
-        }
-    }
-
 
     private void Update()
     {
@@ -81,7 +81,74 @@ public class DavidDie : SingletonMono<DavidDie>
 
         CheckIcon();
     }
+    #endregion
 
+    #region 初始化方法
+    private void Init()
+    {
+        foreach (var icon in IconList)
+        {
+            icon.color = Color.clear;
+        }
+    }
+
+    /// <summary>
+    /// 初始化大卫的胃系统，重置所有状态
+    /// </summary>
+    public void InitializeDavidDie()
+    {
+        // 重置等级和经验
+        level = 1;
+        currentExp = 0;
+    
+        // 清空胃袋中的食物
+        if (inDavidDie != null)
+        {
+            inDavidDie.Clear();
+        }
+        else
+        {
+            inDavidDie = new List<FoodName>();
+        }
+    
+        // 重置计时器
+        time = 0f;
+    
+        // 重置UI图标
+        ResetAllIcons();
+    
+        // 重置进度条
+        if (timeSlider != null)
+        {
+            timeSlider.value = 1f;
+        }
+    
+        // 重置游戏状态（根据需求决定是否重置）
+        // gameStarted = false;
+    
+        Debug.Log("大卫的胃系统已初始化");
+    }
+
+    /// <summary>
+    /// 重置所有食物图标显示
+    /// </summary>
+    private void ResetAllIcons()
+    {
+        if (IconList != null)
+        {
+            foreach (var icon in IconList)
+            {
+                if (icon != null)
+                {
+                    icon.sprite = null;
+                    icon.color = Color.clear;
+                }
+            }
+        }
+    }
+    #endregion
+
+    #region UI与图标管理
     private void CheckIcon()
     {
         // 多余图标清零
@@ -100,11 +167,12 @@ public class DavidDie : SingletonMono<DavidDie>
             {
                 IconList[i].sprite = null;
                 IconList[i].color = Color.clear;
-
             }
         }
     }
+    #endregion
 
+    #region 食物消化系统
     // 检测是否还能吃
     public void Eat(FoodName foodName)
     {
@@ -167,15 +235,6 @@ public class DavidDie : SingletonMono<DavidDie>
         }
     }
 
-    // 增加基础属性
-    private void Add(float health, float attack, float attackSpeed, float speed)
-    {
-        player.Health += health;
-        player.Attack += attack;
-        player.AttackSpeed += attackSpeed;
-        player.currentSpeed += speed;
-    }
-
     // 检测是否还能继续吃
     public bool CheckCanEat()
     {
@@ -188,7 +247,20 @@ public class DavidDie : SingletonMono<DavidDie>
             return canEat = false;
         }
     }
+    #endregion
 
+    #region 属性管理
+    // 增加基础属性
+    private void Add(float health, float attack, float attackSpeed, float speed)
+    {
+        player.Health += health;
+        player.Attack += attack;
+        player.AttackSpeed += attackSpeed;
+        player.currentSpeed += speed;
+    }
+    #endregion
+
+    #region 等级与经验系统
     public void UpLevel(int exp)
     {
         currentExp += exp;
@@ -210,69 +282,5 @@ public class DavidDie : SingletonMono<DavidDie>
                 break;
         }
     }
-    
-    /// <summary>
-    /// 初始化大卫的胃系统，重置所有状态
-    /// </summary>
-    public void InitializeDavidDie()
-    {
-        // 重置等级和经验
-        level = 1;
-        currentExp = 0;
-    
-        // 清空胃袋中的食物
-        if (inDavidDie != null)
-        {
-            inDavidDie.Clear();
-        }
-        else
-        {
-            inDavidDie = new List<FoodName>();
-        }
-    
-        // 重置计时器
-        time = 0f;
-    
-        // 重置UI图标
-        ResetAllIcons();
-    
-        // 重置进度条
-        if (timeSlider != null)
-        {
-            timeSlider.value = 1f;
-        }
-    
-        // 重置游戏状态（根据需求决定是否重置）
-        // gameStarted = false;
-    
-        Debug.Log("大卫的胃系统已初始化");
-    }
-
-    /// <summary>
-    /// 重置所有食物图标显示
-    /// </summary>
-    private void ResetAllIcons()
-    {
-        if (IconList != null)
-        {
-            foreach (var icon in IconList)
-            {
-                if (icon != null)
-                {
-                    icon.sprite = null;
-                    icon.color = Color.clear;
-                }
-            }
-        }
-    }
-    
-    // 五个等级的颜色
-    private readonly Color[] rankColors = new Color[]
-    {
-        new Color(1.0f, 1.0f, 1.0f),    // 普通 - 白色
-        new Color(0.0f, 1.0f, 0.0f),    // 精良 - 绿色
-        new Color(0.0f, 0.0f, 1.0f),    // 稀有 - 蓝色
-        new Color(0.5f, 0.0f, 0.5f),    // 史诗 - 紫色
-        new Color(1.0f, 0.647f, 0.0f)   // 传说 - 橙色
-    };
+    #endregion
 }

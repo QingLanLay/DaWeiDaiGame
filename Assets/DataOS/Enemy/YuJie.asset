@@ -16,7 +16,8 @@ MonoBehaviour:
   enemyName: "\u96E8\u59D0"
   speed: 1
   attack: 100
-  health: 250
+  health: 2500
   exp: 10000
   icon: {fileID: 1629776627, guid: c54f71deadcfc2a48b65534e2e53465e, type: 3}
   scale: 0.3
+  efffectClip: {fileID: 0}
