@@ -79,6 +79,10 @@ public class Enemy : MonoBehaviour
         ChangeDirection();
         
         // TODO：如果是雨姐，修改背景音乐
+        if (ID == 2)
+        {
+            AudioManager.Instance.PlayAmbientAudio(5);
+        }
     }
 
     private void OnDisable()
@@ -376,13 +380,8 @@ public class Enemy : MonoBehaviour
             
             // TODO:音效
             // 受击触发概率
-            var randomNum = Random.value *100;
-            if (randomNum <= 10)
-            {
-                // 触发受击音效
-                AudioManager.Instance.PlayEffectAudio();
-            }
-
+            AudioManager.Instance.PlayEffectAudio(effectClip,10f);
+          
 
             // 受到子弹伤害
             health -= other.GetComponent<Bullet>().Attack;

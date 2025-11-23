@@ -12,7 +12,7 @@ public class PlayerStatus : MonoBehaviour
     public TextMeshProUGUI speedText;
     public TextMeshProUGUI scoreText;
 
-    public PlayerController player;
+    private PlayerController player;
 
     public DavidDie davidDie;
 
