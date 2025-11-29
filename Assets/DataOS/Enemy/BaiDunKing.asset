@@ -20,3 +20,4 @@ MonoBehaviour:
   exp: 1000
   icon: {fileID: 1623998156, guid: 7ef11f598e1d14142b83e3bd870c30cf, type: 3}
   scale: 1
+  efffectClip: {fileID: 8300000, guid: 8f46a714490f95e488445cee7ac0cfcf, type: 3}

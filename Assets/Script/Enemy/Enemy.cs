@@ -346,7 +346,6 @@ public class Enemy : MonoBehaviour
         bossOnAirTime += Time.deltaTime;
         if (bossOnAirTime >= 35f)
         {
-            bossOnAirTime = 0;
             return false;
         }
 
@@ -406,7 +405,9 @@ public class Enemy : MonoBehaviour
     {
         if (isDead) return;
         isDead = true;
+        bossOnAirTime = 0;
 
+        AudioManager.Instance.PlayEffectAudio(effectClip,50f);
         if (ID == 2)
         {
             AudioManager.Instance.ChangeBGM();

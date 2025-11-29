@@ -305,6 +305,7 @@ public class PlayerController : MonoBehaviour
             // 如果可以吃，则执行吃方法
             if (davidDie.CheckCanEat())
             {
+                AudioManager.Instance.PlayerRandomEffect();
                 animator.SetTrigger("eat");
                 var food = other.GetComponent<Food>();
                 if (!food.isEat)

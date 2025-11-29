@@ -8,7 +8,8 @@ using Random = UnityEngine.Random;
 
 public class AudioManager : SingletonMono<AudioManager>
 {
-    #region 变量声明
+#region 变量声明
+
     public AudioMixer master;
     public AudioSource gameSource;
     public AudioSource ambientSource;
@@ -17,9 +18,14 @@ public class AudioManager : SingletonMono<AudioManager>
     public Slider ambientSlider;
 
     public List<AudioClip> ambientSourceList = new List<AudioClip>();
-    #endregion
 
-    #region Unity 生命周期方法
+    [Header("Player")]
+    public List<AudioClip> playerSourceList = new List<AudioClip>();
+
+#endregion
+
+#region Unity 生命周期方法
+
     protected override void Awake()
     {
         base.Awake();
@@ -34,9 +40,12 @@ public class AudioManager : SingletonMono<AudioManager>
             PlayAmbientAudio(range);
         }
     }
-    #endregion
 
-    #region 音频播放方法
+#endregion
+
+
+#region 音频播放方法
+
     public void PlayEffectAudio(AudioClip clip)
     {
         if (gameSource.isPlaying)
@@ -45,7 +54,7 @@ public class AudioManager : SingletonMono<AudioManager>
         }
 
         gameSource.clip = clip;
-        gameSource.Play();
+        gameSource.PlayOneShot(clip);
     }
 
     public void PlayAmbientAudio(int index)
@@ -68,9 +77,29 @@ public class AudioManager : SingletonMono<AudioManager>
             AudioManager.Instance.PlayEffectAudio(clip);
         }
     }
-    #endregion
 
-    #region 音量控制方法
+    public void PlayerRandomEffect()
+    {
+        if (playerSourceList.Count == 0)
+        {
+            return;
+        }
+
+        var index = Random.Range(0, playerSourceList.Count);
+        
+        var randomNum = Random.value * 100;
+        Debug.Log($"index:{index},randomNum:{randomNum}");
+        if (randomNum <= 20)
+        {
+            // 触发受击音效
+            AudioManager.Instance.PlayEffectAudio(playerSourceList[index]);
+        }
+    }
+
+#endregion
+
+#region 音量控制方法
+
     public void changeMasterEffectValue()
     {
         var currentValue = effectSlider.value;
@@ -117,9 +146,11 @@ public class AudioManager : SingletonMono<AudioManager>
 
         return currentValue;
     }
-    #endregion
 
-    #region 协程方法
+#endregion
+
+#region 协程方法
+
     public void ChangeBGM()
     {
         StartCoroutine(Wait3Seconds());
@@ -131,5 +162,6 @@ public class AudioManager : SingletonMono<AudioManager>
         var range = Random.Range(0, ambientSourceList.Count - 1);
         PlayAmbientAudio(range);
     }
-    #endregion
+
+#endregion
 }
