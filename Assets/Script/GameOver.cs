@@ -46,6 +46,7 @@ public class GameOver : MonoBehaviour
             ClosePanel();
         }
         
+        AudioManager.Instance.StopEffectAudio();
         
         var gameSettingPanelControl = gameSettingPanel.GetComponent<GameSettingPanelControl>();
         Debug.Log("设置面板开启");

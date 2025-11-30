@@ -96,6 +96,14 @@ public class AudioManager : SingletonMono<AudioManager>
         }
     }
 
+    public void StopEffectAudio()
+    {
+        if (gameSource.isPlaying)
+        {
+            gameSource.Stop();
+        }
+    }
+
 #endregion
 
 #region 音量控制方法

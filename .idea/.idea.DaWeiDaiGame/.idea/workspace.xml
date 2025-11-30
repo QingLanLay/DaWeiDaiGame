@@ -6,9 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="1934e327-0f41-4659-9ba1-090f474a1eb5" name="更改" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.DaWeiDaiGame/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.DaWeiDaiGame/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SampleScene.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Script/Enemy/Enemy.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Script/Enemy/Enemy.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Script/Enemy/EnenmyData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Script/Enemy/EnenmyData.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -101,7 +98,8 @@
       <workItem from="1761095015547" duration="2262000" />
       <workItem from="1761985817836" duration="11516000" />
       <workItem from="1763280827688" duration="7535000" />
-      <workItem from="1763368970072" duration="1921000" />
+      <workItem from="1763368971416" duration="757000" />
+      <workItem from="1764506637430" duration="596000" />
     </task>
     <servers />
   </component>
