@@ -184,12 +184,12 @@ public class PlayerController : MonoBehaviour
     {
         Vector3 absScale = new Vector3(Mathf.Abs(body.transform.localScale.x), body.transform.localScale.y,
             body.transform.localScale.z);
-        if (moveHorizontal >= 0.1f)
+        if (moveHorizontal >= 0.1f && Time.timeScale != 0)
         {
             body.transform.localScale = absScale;
             animator.SetBool("isWalk", true);
         }
-        else if (moveHorizontal <= -0.1f)
+        else if (moveHorizontal <= -0.1f && Time.timeScale != 0)
         {
             body.transform.localScale = new Vector3(-absScale.x, absScale.y, absScale.z);
             animator.SetBool("isWalk", true);
@@ -216,7 +216,7 @@ public class PlayerController : MonoBehaviour
 
             // 动态减少移速，攻速，攻击力
             currentSpeed -= 0.01f;
-            attackSpeed -= 0.02f * level;
+            attackSpeed -= 0.01f * level;
             attack -= 0.1f * level;
 
             if (attackSpeed < 0.8f)

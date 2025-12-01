@@ -344,7 +344,7 @@ public class Enemy : MonoBehaviour
     private bool CheckCurrentBlooldAndTime()
     {
         bossOnAirTime += Time.deltaTime;
-        if (bossOnAirTime >= 35f)
+        if (bossOnAirTime >= 50f)
         {
             return false;
         }
