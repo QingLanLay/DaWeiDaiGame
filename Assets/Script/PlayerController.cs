@@ -95,6 +95,8 @@ public class PlayerController : MonoBehaviour
         timeBullet += Time.deltaTime;
         realCurrentSpeed = currentSpeed;
 
+        ChangeSclae();
+
         // 获取输入值
         moveHorizontal = Input.GetAxisRaw("Horizontal");
         attackInput = Input.GetKey(KeyCode.J);
@@ -340,6 +342,18 @@ public class PlayerController : MonoBehaviour
     private void Dead()
     {
         gameOver.GetComponent<GameOver>().OpenPanel();
+    }
+
+    private void ChangeSclae()
+    {
+        var bigScale = health switch
+        {
+            <150f => 0.4f,
+            <200f => health/150f * 0.4f,
+            <300f => health/250f * 0.4f,
+            _ => health/300f * 0.4f
+        };
+        this.transform.localScale = new Vector3(bigScale, bigScale, bigScale);
     }
     #endregion
 }
