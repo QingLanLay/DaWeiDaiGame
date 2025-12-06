@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public class GameOver : MonoBehaviour
 {
     public Image gameOverImage;
+    public Image endImage;
     public Button restartButton;
     public Button quitButton;
     public TextMeshProUGUI scoreText;
@@ -15,6 +16,9 @@ public class GameOver : MonoBehaviour
     public PlayerController player;
     public DavidDie davidDieCp;
     public GameObject gameSettingPanel;
+
+    public List<Sprite> endImageList = new List<Sprite>();
+    public TextMeshProUGUI endText;
     
     // Start is called before the first frame update
      void Awake()
@@ -26,6 +30,29 @@ public class GameOver : MonoBehaviour
     void Update()
     {
         scoreText.text = "得分:" + davidDieCp.currentExp;
+        if (davidDieCp.currentExp <= 5000)
+        {
+            endImage.sprite = endImageList[0];
+            endText.text = "菜就多练！";
+        }
+        
+        if (davidDieCp.currentExp >= 5000 && davidDieCp.currentExp<= 50000)
+        {
+            endImage.sprite = endImageList[1];
+            endText.text = "带派不老铁！";
+        }
+        
+        if (davidDieCp.currentExp >= 50000 && davidDieCp.currentExp <= 200000)
+        {
+            endImage.sprite = endImageList[2];
+            endText.text = "良子大胃袋，属实挺带派！";
+        }
+        
+        if (davidDieCp.currentExp >= 200000)
+        {
+            endImage.sprite = endImageList[3];
+            endText.text = "拯救了瑞贝卡，你就是夜之城活着的传奇！";
+        }
     }
 
    public void Quit()

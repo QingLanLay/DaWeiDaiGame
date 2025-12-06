@@ -131,6 +131,7 @@ public class Enemy : MonoBehaviour
             if (animator != null)
             {
                 animator.SetTrigger("BeAttack");
+                AudioManager.Instance.PlayBulletAudio(1);
             }
 
             if (health <= 0)

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -13,7 +14,7 @@ public class AudioManager : SingletonMono<AudioManager>
     public AudioMixer master;
     public AudioSource gameSource;
     public AudioSource ambientSource;
-
+    public AudioSource bulletSourc;
     public Slider effectSlider;
     public Slider ambientSlider;
 
@@ -22,6 +23,8 @@ public class AudioManager : SingletonMono<AudioManager>
     [Header("Player")]
     public List<AudioClip> playerSourceList = new List<AudioClip>();
 
+    [FormerlySerializedAs("BulletAudioClips")]
+    public List<AudioClip> bulletAudioClips = new List<AudioClip>();
 #endregion
 
 #region Unity 生命周期方法
@@ -45,6 +48,18 @@ public class AudioManager : SingletonMono<AudioManager>
 
 
 #region 音频播放方法
+
+    public void PlayBulletAudio(int index)
+    {
+        if (bulletAudioClips[index] == null)
+        {
+            return;
+        }
+        
+        bulletSourc.clip = bulletAudioClips[index];
+        bulletSourc.PlayOneShot(bulletAudioClips[index]);
+
+    }
 
     public void PlayEffectAudio(AudioClip clip)
     {

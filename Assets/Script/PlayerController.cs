@@ -11,43 +11,53 @@ using AnimatorControllerParameter = UnityEngine.AnimatorControllerParameter;
 
 public class PlayerController : MonoBehaviour
 {
-    #region 变量声明
+#region 变量声明
+
     // 组件引用
     private Rigidbody2D rb;
     private Animator animator;
-    
+
     // 输入控制
     private float moveHorizontal;
     private bool attackInput;
     private Vector3 startV3;
-    
+
     // 玩家属性
-    [SerializeField] private float health = 150f;
-    [SerializeField] public float currentSpeed = 4f;
-    [SerializeField] private float attack = 10f;
-    [SerializeField] private float attackSpeed = 0.8f;
-    
+    [SerializeField]
+    private float health = 150f;
+
+    [SerializeField]
+    public float currentSpeed = 4f;
+
+    [SerializeField]
+    private float attack = 10f;
+
+    [SerializeField]
+    private float attackSpeed = 0.8f;
+
     public float realCurrentSpeed;
     private float maxSpeed;
-    
+
     // 计时器
     private float timeBullet;
-    
+
     // 引用
     public DavidDie davidDie;
     public GameObject gameOver;
     public Camera mainCamera;
     public GameObject body;
-    
+
     [Range(0, 5)]
     public int level = 1;
-    
+
     // 屏幕边界和玩家尺寸
     private float minX, minY, maxX, maxY;
     private float playerWidth, playerHeight;
-    #endregion
 
-    #region 属性封装
+#endregion
+
+#region 属性封装
+
     public float Health
     {
         get => health;
@@ -71,9 +81,11 @@ public class PlayerController : MonoBehaviour
         get => attackSpeed;
         set => attackSpeed = value;
     }
-    #endregion
 
-    #region Unity 生命周期方法
+#endregion
+
+#region Unity 生命周期方法
+
     void Start()
     {
         startV3 = this.transform.position;
@@ -98,14 +110,20 @@ public class PlayerController : MonoBehaviour
         ChangeSclae();
 
         // 获取输入值
-        moveHorizontal = Input.GetAxisRaw("Horizontal");
+        float keyboardInput = Input.GetAxisRaw("Horizontal");
+        float virtualInput = VirtualInputManager.Instance.GetVirtualAxisHorizontal();
+
+
+        moveHorizontal = (keyboardInput != 0) ? keyboardInput : virtualInput;
+
+
         attackInput = Input.GetKey(KeyCode.J);
-        bool lowSpeedInput = Input.GetKey(KeyCode.K); 
+        bool lowSpeedInput = Input.GetKey(KeyCode.K);
 
         HandleAnimation();
         HandleAttack();
         HandleSpeedControl(lowSpeedInput);
-        
+
         if (health <= 0)
         {
             Dead();
@@ -117,9 +135,11 @@ public class PlayerController : MonoBehaviour
         // 先移动，再限制边界
         MoveAndClamp();
     }
-    #endregion
 
-    #region 初始化方法
+#endregion
+
+#region 初始化方法
+
     private void CalculatePlayerSize()
     {
         SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
@@ -179,9 +199,11 @@ public class PlayerController : MonoBehaviour
 
         Debug.Log("玩家已初始化");
     }
-    #endregion
 
-    #region 动画控制
+#endregion
+
+#region 动画控制
+
     private void HandleAnimation()
     {
         Vector3 absScale = new Vector3(Mathf.Abs(body.transform.localScale.x), body.transform.localScale.y,
@@ -201,18 +223,22 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("isWalk", false);
         }
     }
-    #endregion
 
-    #region 攻击系统
+#endregion
+
+#region 攻击系统
+
     private void HandleAttack()
     {
         float attackInterval = 1f / attackSpeed;
-        if (attackInput && timeBullet >= attackInterval)
+        if ((attackInput && timeBullet >= attackInterval) ||
+            (VirtualInputManager.Instance.isAttackPressed && timeBullet >= attackInterval))
         {
             // 设置该状态的播放速度，例如调整为0.8倍速
-            animator.SetFloat("attackSpeed", attackSpeed*2f);
+            animator.SetFloat("attackSpeed", attackSpeed * 2f);
             //设置动画
             animator.SetBool("attack", true);
+            AudioManager.Instance.PlayBulletAudio(0);
 
             PerformAttack();
 
@@ -243,20 +269,22 @@ public class PlayerController : MonoBehaviour
     {
         BulletManager.Instance.GetBullet();
     }
-    #endregion
 
-    #region 移动与速度控制
+#endregion
+
+#region 移动与速度控制
+
     private void MoveAndClamp()
     {
         if (mainCamera == null) return;
 
         // 计算移动
-        Vector2 movement = new Vector2(moveHorizontal * realCurrentSpeed,rb.velocity.y);
+        Vector2 movement = new Vector2(moveHorizontal * realCurrentSpeed, rb.velocity.y);
         Vector3 newPosition = transform.position + (Vector3)movement * Time.fixedDeltaTime;
 
         // 应用边界限制（允许一半身体超出）
         newPosition.x = Mathf.Clamp(newPosition.x, minX - playerWidth * 0.5f, maxX + playerWidth * 0.5f);
-        
+
         // 直接设置位置，避免物理引擎的干扰
         rb.MovePosition(newPosition);
     }
@@ -271,7 +299,7 @@ public class PlayerController : MonoBehaviour
         {
             realCurrentSpeed = currentSpeed;
         }
-        
+
         ControlMaxSpeed();
     }
 
@@ -279,7 +307,7 @@ public class PlayerController : MonoBehaviour
     {
         if (currentSpeed > maxSpeed)
         {
-           currentSpeed = maxSpeed;
+            currentSpeed = maxSpeed;
         }
 
         if (attackSpeed > maxSpeed)
@@ -287,9 +315,11 @@ public class PlayerController : MonoBehaviour
             attackSpeed = maxSpeed;
         }
     }
-    #endregion
 
-    #region 碰撞与交互
+#endregion
+
+#region 碰撞与交互
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Enemy"))
@@ -336,9 +366,11 @@ public class PlayerController : MonoBehaviour
             other.returnToPool?.Invoke(other.gameObject);
         }
     }
-    #endregion
 
-    #region 状态管理
+#endregion
+
+#region 状态管理
+
     private void Dead()
     {
         gameOver.GetComponent<GameOver>().OpenPanel();
@@ -348,12 +380,13 @@ public class PlayerController : MonoBehaviour
     {
         var bigScale = health switch
         {
-            <150f => 0.4f,
-            <200f => health/150f * 0.4f,
-            <300f => health/250f * 0.4f,
-            _ => health/300f * 0.4f
+            > 300f => 0.8f + (health - 300) / 300f * 0.2f,
+            > 150f => health / 150f * 0.4f,
+            <= 150f => 0.4f,
+            _ => health / 300f * 0.4f
         };
         this.transform.localScale = new Vector3(bigScale, bigScale, bigScale);
     }
-    #endregion
+
+#endregion
 }
